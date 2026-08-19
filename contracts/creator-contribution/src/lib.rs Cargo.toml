@@ -1,0 +1,11 @@
+#![no_std]
+use soroban_sdk::{contractimpl, Env};
+
+pub struct CredentialContract;
+
+#[contractimpl]
+impl CredentialContract {
+    pub fn issue(env: Env, msme_id: u32) {
+        // logic for LGU-issued MSME readiness credential
+    }
+}
