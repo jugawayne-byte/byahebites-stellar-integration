@@ -2,15 +2,15 @@ use axum::{routing::post, Router, Json};
 use soroban_sdk::{Client, Env};
 
 pub fn router() -> Router {
-    Router::new().route("/record", post(record_contribution))
+    Router::new().route("/issue", post(issue_credential))
 }
 
-async fn record_contribution() -> Json<String> {
+async fn issue_credential() -> Json<String> {
     let client = Client::new("https://soroban-testnet.stellar.org");
 
     let result = client
-        .call("ContributionContract", "record", ("creator123",))
+        .call("CredentialContract", "issue", (1234_u32,))
         .await;
 
-    Json(format!("Recorded contribution: {:?}", result))
+    Json(format!("Issued MSME credential: {:?}", result))
 }
