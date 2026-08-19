@@ -1,10 +1,16 @@
-use axum::{routing::post, Router};
-use soroban_sdk::Client;
+use axum::{routing::post, Router, Json};
+use soroban_sdk::{Client, Env};
 
 pub fn router() -> Router {
-    Router::new().route("/issue", post(issue_credential))
+    Router::new().route("/record", post(record_contribution))
 }
 
-async fn issue_credential() {
-    // Connect to Soroban testnet and call CredentialContract::issue()
+async fn record_contribution() -> Json<String> {
+    let client = Client::new("https://soroban-testnet.stellar.org");
+
+    let result = client
+        .call("ContributionContract", "record", ("creator123",))
+        .await;
+
+    Json(format!("Recorded contribution: {:?}", result))
 }
