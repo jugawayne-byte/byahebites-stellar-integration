@@ -40,6 +40,18 @@ By the end of the sprint, ≥10 MSMEs and 12 creators will have real testnet cre
 - Circuit participation  
 - SHA‑256 content commitment  
 - Queryable by MSME wallet on Stellar Expert (Testnet)
+- Public lifecycle fields (minimum metadata):
+- Issuer address (Stellar account)
+- Commitment version
+- Status enum (e.g. Issued, Active, Expired, Revoked)
+- Issued timestamp
+- Expiry timestamp
+- Last update timestamp
+- Expiry model:
+- Status is computed dynamically at read time from the stored expiry timestamp.
+- No additional transaction is required to mark a credential as expired.
+
+
 
 ### **2. Creator Contribution Contract**
 - Write‑once contribution proofs  
@@ -54,6 +66,12 @@ By the end of the sprint, ≥10 MSMEs and 12 creators will have real testnet cre
 - Contribution issuance UI  
 - Horizon API lookup  
 - Distinct failure modes (malformed input, mismatch, wrong network, unknown credential)
+- 
+- Failure modes:
+
+- Unknown credential: successful contract read with no matching commitment.
+- Unavailable state: RPC, simulation, contract-read, or decoding failure.
+
 
 ### **4. Ecosystem Validation**
 - ≥10 MSMEs credentialed  
@@ -70,6 +88,14 @@ By the end of the sprint, ≥10 MSMEs and 12 creators will have real testnet cre
 - **Near‑zero fees** (<$0.01 per credential)  
 - **Sub‑5‑second finality** for instant verification  
 - **Testnet‑only** (no mainnet, no tokens, no payouts)
+  
+- ### Canonical Commitment Serialization
+
+- Domain-separation string: `byahébites-msme-credential-v1`
+- Encoding: UTF-8 JSON, sorted field order
+- Hash algorithm: SHA-256
+- Test vectors: `/evidence/test-vectors/` (Rust + TypeScript)
+
 
 ## Architecture (Sprint Scope Only)
 This Instaward builds only the **Stellar Layer**:
@@ -85,6 +111,21 @@ All ByahéBITES platform components (registry, LGU console, TPB/DOT dashboards, 
 - Demo video link (to be added)  
 - Contract IDs + deployment tx hashes (to be added)  
 - Tx hash list (to be added)
+  
+- ## Acceptance Checklist
+
+Each requirement maps to a specific artifact:
+
+- Contract ID: `/docs/contract.md`
+- WASM checksum: `/evidence/wasm-checksum.txt`
+- Deployment tx hash list: `/evidence/tx-hashes.md`
+- Verifier URL: https://github-import-jugawayne.replit.app/
+- Test reports: `/docs/tests/`
+- Rejected-call evidence: `/evidence/rejected/`
+- Demo video: `/docs/demo-video.md`
+- Release assets: `/releases/`
+- Manifest: `/docs/manifest.md`
+
 
 ## Team
 **TAPATGOV / ByahéBITES**
@@ -94,8 +135,13 @@ All ByahéBITES platform components (registry, LGU console, TPB/DOT dashboards, 
 Ambassador Chapter: **Stellar Philippines**  
 Chapter Lead: **Armielyn Obinguar**
 
-## Live Demo
-*(To be added after deployment)*  
-`https://<demo-url>.vercel.app`
+
 
 ## Repository Structure
+- `/contract/` — Soroban contracts (MSME, Creator)
+- `/verifier/` — Static verifier site (frontend)
+- `/scripts/` — Deployment and lifecycle scripts
+- `/docs/` — SOW, architecture, tests, manifest
+- `/evidence/` — Test vectors, tx hashes, rejected calls, WASM checksum
+- `/releases/` — Tagged builds and artifacts
+
