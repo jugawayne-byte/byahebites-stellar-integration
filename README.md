@@ -1,3 +1,19 @@
+## 🔗 Public Demo & Evidence
+
+**Live Verifier & Demo Site**  
+https://github-import-jugawayne.replit.app/
+
+**Evidence Bundle Includes:**
+- Contract ID: *(to be added after deployment)*
+- WASM checksum: *(to be added after build)*
+- Soroban Explorer link: *(to be added after deployment)*
+- Test vectors: `/evidence/test-vectors/`
+- Rejected-call evidence: `/evidence/rejected/`
+- Verifier source: `/verifier/`
+- Lifecycle scripts: `/scripts/`
+- Acceptance-to-evidence manifest: `/docs/manifest.md`
+
+
 # ByahéBITES Soroban Credential Layer  
 Anchoring MSME & creator identity on Stellar testnet
 
