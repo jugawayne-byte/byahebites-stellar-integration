@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "contracts/msme-credential",
+    "contracts/creator-contribution",
+]
+resolver = "2"

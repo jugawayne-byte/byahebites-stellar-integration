@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Byahe Bites"
+description = "The imported Byahe Bites web project, preserved from GitHub and configured to run as a Replit web app."
+version = "1.0.0"
+id = "artifacts/byahebites-stellar-integration"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18470
+
+[services.development]
+run = "pnpm --filter @workspace/byahebites-stellar-integration run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/byahebites-stellar-integration", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/byahebites-stellar-integration/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18470"
+BASE_PATH = "/"

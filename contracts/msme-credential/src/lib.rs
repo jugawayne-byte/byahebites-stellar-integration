@@ -1,31 +1,32 @@
 #![no_std]
 
-use soroban_sdk::{
-    contract, contractimpl, contracttype, Address, Bytes, BytesN, Env, Vec,
-};
+#[cfg(test)]
+extern crate std;
 
-const STATUS_ISSUED: u32 = 1;
-const STATUS_ACTIVE: u32 = 2;
-const STATUS_EXPIRED: u32 = 3;
+use soroban_sdk::{contract, contractimpl, contracttype, Address, BytesN, Env, String};
 
+const MAX_TEXT_LEN: u32 = 256;
+const MAX_MSME_ID_LEN: u32 = 128;
+
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[contracttype]
-#[derive(Clone)]
-pub struct CredentialRecord {
+pub struct Credential {
     pub issuer: Address,
-    pub subject: Address,
-    pub msme_id: u32,
-    pub psgc_code: Bytes,
-    pub status: u32,
-    pub circuit_id: Bytes,
+    pub msme_wallet: Address,
+    pub msme_id: String,
+    pub psgc_code: String,
+    pub readiness_status: u32,
+    pub circuit_id: String,
     pub content_hash: BytesN<32>,
-    pub issued_at: u64,
-    pub expires_at: u64,
-    pub version: u32,
+    pub issued_ledger: u32,
+    pub revoked_ledger: Option<u32>,
+    pub schema_version: u32,
 }
-
+#[derive(Clone)]
 #[contracttype]
 enum DataKey {
-    Issuer,
+    Admin,
+    Issuer(Address),
     Credential(Address),
 }
 
@@ -34,168 +35,224 @@ pub struct MsmeCredentialContract;
 
 #[contractimpl]
 impl MsmeCredentialContract {
-    pub fn initialize(env: Env, issuer: Address) {
-        if env.storage().instance().has(&DataKey::Issuer) {
+    /// Initializes the contract and allowlists the admin as the first issuer.
+    pub fn initialize(env: Env, admin: Address) {
+        if env.storage().instance().has(&DataKey::Admin) {
             panic!("already initialized");
         }
-        issuer.require_auth();
-        env.storage().instance().set(&DataKey::Issuer, &issuer);
+
+        admin.require_auth();
+        env.storage().instance().set(&DataKey::Admin, &admin);
+        env.storage().instance().set(&DataKey::Issuer(admin), &true);
     }
 
-    pub fn issue(
+    /// Adds an issuer. Only the contract admin can change the allowlist.
+    pub fn add_issuer(env: Env, issuer: Address) {
+        let admin = Self::get_admin(&env);
+        admin.require_auth();
+        env.storage()
+            .instance()
+            .set(&DataKey::Issuer(issuer), &true);
+    }
+
+    /// Removes an issuer. The admin remains able to restore it later.
+    pub fn remove_issuer(env: Env, issuer: Address) {
+        let admin = Self::get_admin(&env);
+        admin.require_auth();
+        env.storage()
+            .instance()
+            .set(&DataKey::Issuer(issuer), &false);
+    }
+
+    /// Issues one credential for an MSME wallet. Credentials are write-once.
+    pub fn issue_credential(
         env: Env,
         issuer: Address,
-        subject: Address,
-        msme_id: u32,
-        psgc_code: Bytes,
-        status: u32,
-        circuit_id: Bytes,
+        msme_wallet: Address,
+        msme_id: String,
+        psgc_code: String,
+        readiness_status: u32,
+        circuit_id: String,
         content_hash: BytesN<32>,
-        expires_at: u64,
-        version: u32,
-    ) {
+    ) -> Credential {
+        if !Self::issuer_is_allowed(&env, &issuer) {
+            panic!("unauthorized issuer");
+        }
         issuer.require_auth();
-        Self::assert_issuer(&env, &issuer);
 
-        if psgc_code.len() == 0 || circuit_id.len() == 0 || version == 0 {
-            panic!("malformed credential");
+        if msme_id.len() == 0 || msme_id.len() > MAX_MSME_ID_LEN {
+            panic!("malformed msme id");
         }
-        if status != STATUS_ISSUED && status != STATUS_ACTIVE {
-            panic!("invalid status");
+        if psgc_code.len() == 0 || psgc_code.len() > MAX_TEXT_LEN {
+            panic!("malformed psgc code");
         }
-
-        let key = DataKey::Credential(subject.clone());
-        if env.storage().persistent().has(&key) {
+        if circuit_id.len() == 0 || circuit_id.len() > MAX_TEXT_LEN {
+            panic!("malformed circuit id");
+        }
+        if readiness_status > 2 {
+            panic!("invalid readiness status");
+        }
+        if env
+            .storage()
+            .instance()
+            .has(&DataKey::Credential(msme_wallet.clone()))
+        {
             panic!("credential already exists");
         }
 
-        let record = CredentialRecord {
+        let credential = Credential {
             issuer,
-            subject,
+            msme_wallet: msme_wallet.clone(),
             msme_id,
             psgc_code,
-            status,
+            readiness_status,
             circuit_id,
             content_hash,
-            issued_at: env.ledger().timestamp(),
-            expires_at,
-            version,
+            issued_ledger: env.ledger().sequence(),
+            revoked_ledger: None,
+            schema_version: 1,
         };
-        env.storage().persistent().set(&key, &record);
-    }
-
-    pub fn get(env: Env, subject: Address) -> Option<CredentialRecord> {
-        let key = DataKey::Credential(subject);
-        let mut record: CredentialRecord = env.storage().persistent().get(&key)?;
-        if record.expires_at > 0 && env.ledger().timestamp() >= record.expires_at {
-            record.status = STATUS_EXPIRED;
-        }
-        Some(record)
-    }
-
-    pub fn has(env: Env, subject: Address) -> bool {
         env.storage()
-            .persistent()
-            .has(&DataKey::Credential(subject))
-    }
-
-    pub fn issuer(env: Env) -> Option<Address> {
-        env.storage().instance().get(&DataKey::Issuer)
-    }
-
-    pub fn status_values(_env: Env) -> Vec<u32> {
-        let mut values = Vec::new(&_env);
-        values.push_back(STATUS_ISSUED);
-        values.push_back(STATUS_ACTIVE);
-        values.push_back(STATUS_EXPIRED);
-        values
-    }
-
-    fn assert_issuer(env: &Env, issuer: &Address) {
-        let configured: Address = env
-            .storage()
             .instance()
-            .get(&DataKey::Issuer)
-            .unwrap_or_else(|| panic!("not initialized"));
-        if configured != *issuer {
-            panic!("unauthorized issuer");
-        }
+            .set(&DataKey::Credential(msme_wallet), &credential);
+        credential
+    }
+
+    pub fn get_credential(env: Env, msme_wallet: Address) -> Option<Credential> {
+        env.storage()
+            .instance()
+            .get(&DataKey::Credential(msme_wallet))
+    }
+
+    pub fn is_issuer(env: Env, issuer: Address) -> bool {
+        Self::issuer_is_allowed(&env, &issuer)
+    }
+}
+
+impl MsmeCredentialContract {
+    fn get_admin(env: &Env) -> Address {
+        env.storage()
+            .instance()
+            .get(&DataKey::Admin)
+            .unwrap_or_else(|| panic!("not initialized"))
+    }
+
+    fn issuer_is_allowed(env: &Env, issuer: &Address) -> bool {
+        env.storage()
+            .instance()
+            .get(&DataKey::Issuer(issuer.clone()))
+            .unwrap_or(false)
     }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
-    use soroban_sdk::{testutils::Address as _, Address, Bytes, Env};
+    use soroban_sdk::{
+        testutils::{Address as _, Ledger},
+        Env,
+    };
+
+    fn setup() -> (Env, Address, Address) {
+        let env = Env::default();
+        env.mock_all_auths();
+        let admin = Address::generate(&env);
+        let wallet = Address::generate(&env);
+        (env, admin, wallet)
+    }
+
+    fn hash(env: &Env) -> BytesN<32> {
+        BytesN::from_array(env, &[7; 32])
+    }
 
     #[test]
-    fn issues_and_reads_credential() {
-        let env = Env::default();
+    fn authorized_issue_and_lookup() {
+        let (env, issuer, wallet) = setup();
         let contract_id = env.register_contract(None, MsmeCredentialContract);
         let client = MsmeCredentialContractClient::new(&env, &contract_id);
-        let issuer = Address::generate(&env);
-        let subject = Address::generate(&env);
-
-        env.mock_all_auths();
         client.initialize(&issuer);
-        client.issue(
+        env.ledger().set_sequence_number(42);
+        let result = client.issue_credential(
             &issuer,
-            &subject,
-            &1001,
-            &Bytes::from_slice(&env, b"PH-045"),
-            &STATUS_ACTIVE,
-            &Bytes::from_slice(&env, b"circuit-1"),
-            &BytesN::from_array(&env, &[7; 32]),
-            &0,
+            &wallet,
+            &String::from_str(&env, "msme-001"),
+            &String::from_str(&env, "PH-1374"),
             &1,
+            &String::from_str(&env, "circuit-1"),
+            &hash(&env),
         );
+        assert_eq!(result.msme_wallet, wallet);
+        assert_eq!(result.issued_ledger, 42);
+        assert_eq!(client.get_credential(&wallet), Some(result));
+    }
 
-        let record = client.get(&subject).unwrap();
-        assert_eq!(record.msme_id, 1001);
-        assert_eq!(record.status, STATUS_ACTIVE);
-        assert!(client.has(&subject));
+    #[test]
+    #[should_panic(expected = "unauthorized issuer")]
+    fn rejects_unauthorized_issuer() {
+        let (env, issuer, wallet) = setup();
+        let contract_id = env.register_contract(None, MsmeCredentialContract);
+        let client = MsmeCredentialContractClient::new(&env, &contract_id);
+        client.initialize(&issuer);
+        let outsider = Address::generate(&env);
+        client.issue_credential(
+            &outsider,
+            &wallet,
+            &String::from_str(&env, "msme-001"),
+            &String::from_str(&env, "PH-1374"),
+            &1,
+            &String::from_str(&env, "circuit-1"),
+            &hash(&env),
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "malformed psgc code")]
+    fn rejects_malformed_fields() {
+        let (env, issuer, wallet) = setup();
+        let contract_id = env.register_contract(None, MsmeCredentialContract);
+        let client = MsmeCredentialContractClient::new(&env, &contract_id);
+        client.initialize(&issuer);
+        client.issue_credential(
+            &issuer,
+            &wallet,
+            &String::from_str(&env, "msme-001"),
+            &String::from_str(&env, ""),
+            &1,
+            &String::from_str(&env, "circuit-1"),
+            &hash(&env),
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "invalid readiness status")]
+    fn rejects_invalid_readiness_enum() {
+        let (env, issuer, wallet) = setup();
+        let contract_id = env.register_contract(None, MsmeCredentialContract);
+        let client = MsmeCredentialContractClient::new(&env, &contract_id);
+        client.initialize(&issuer);
+        client.issue_credential(
+            &issuer,
+            &wallet,
+            &String::from_str(&env, "msme-001"),
+            &String::from_str(&env, "PH-1374"),
+            &3,
+            &String::from_str(&env, "circuit-1"),
+            &hash(&env),
+        );
     }
 
     #[test]
     #[should_panic(expected = "credential already exists")]
     fn rejects_overwrite() {
-        let env = Env::default();
+        let (env, issuer, wallet) = setup();
         let contract_id = env.register_contract(None, MsmeCredentialContract);
         let client = MsmeCredentialContractClient::new(&env, &contract_id);
-        let issuer = Address::generate(&env);
-        let subject = Address::generate(&env);
-
-        env.mock_all_auths();
         client.initialize(&issuer);
-        let hash = BytesN::from_array(&env, &[8; 32]);
-        let psgc = Bytes::from_slice(&env, b"PH-045");
-        let circuit = Bytes::from_slice(&env, b"circuit-1");
-        client.issue(&issuer, &subject, &1, &psgc, &STATUS_ISSUED, &circuit, &hash, &0, &1);
-        client.issue(&issuer, &subject, &2, &psgc, &STATUS_ISSUED, &circuit, &hash, &0, &1);
-    }
-
-    #[test]
-    #[should_panic(expected = "unauthorized issuer")]
-    fn rejects_non_allowlisted_issuer() {
-        let env = Env::default();
-        let contract_id = env.register_contract(None, MsmeCredentialContract);
-        let client = MsmeCredentialContractClient::new(&env, &contract_id);
-        let issuer = Address::generate(&env);
-        let attacker = Address::generate(&env);
-        let subject = Address::generate(&env);
-
-        env.mock_all_auths();
-        client.initialize(&issuer);
-        client.issue(
-            &attacker,
-            &subject,
-            &1,
-            &Bytes::from_slice(&env, b"PH-045"),
-            &STATUS_ISSUED,
-            &Bytes::from_slice(&env, b"circuit-1"),
-            &BytesN::from_array(&env, &[9; 32]),
-            &0,
-            &1,
-        );
+        let msme_id = String::from_str(&env, "msme-001");
+        let psgc = String::from_str(&env, "PH-1374");
+        let circuit = String::from_str(&env, "circuit-1");
+        let value = hash(&env);
+        client.issue_credential(&issuer, &wallet, &msme_id, &psgc, &1, &circuit, &value);
+        client.issue_credential(&issuer, &wallet, &msme_id, &psgc, &2, &circuit, &value);
     }
 }
