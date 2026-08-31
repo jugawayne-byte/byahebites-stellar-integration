@@ -1,0 +1,4 @@
+- [Dual-editor handoff](dual-editor-handoff.md) — use GitHub as the handoff point between parallel editors; sync a stable revision before the other editor pulls or edits.
+- [Soroban SDK lockfile](soroban-sdk-build.md) — keep the resolved host crypto dependencies locked when building these contracts.
+- [Testnet evidence sources](testnet-evidence-sources.md) — two Markdown publications mirror the canonical JSON record but use different section headings.
+- [GitHub atomic sync](github-atomic-sync.md) — use the connected GitHub GraphQL commit mutation with an expected-head guard when REST Git Data writes are blocked.
