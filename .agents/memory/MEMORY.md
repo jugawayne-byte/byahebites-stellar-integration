@@ -2,3 +2,6 @@
 - [Soroban SDK lockfile](soroban-sdk-build.md) — keep the resolved host crypto dependencies locked when building these contracts.
 - [Testnet evidence sources](testnet-evidence-sources.md) — two Markdown publications mirror the canonical JSON record but use different section headings.
 - [GitHub atomic sync](github-atomic-sync.md) — use the connected GitHub GraphQL commit mutation with an expected-head guard when REST Git Data writes are blocked.
+- [Publish context size](publish-context-size.md) — exclude generated dependency, cache, dist, and Rust target directories through `.replitignore`.
+- [Standalone API packaging](standalone-api-packaging.md) — standalone pnpm installs cannot resolve workspace or catalog specs, and deployment probes need dependency-free liveness routes.
+- [Rebase evidence preservation](rebase-evidence-preservation.md) — during overlapping rebases, preserve canonical Testnet evidence over generic scaffold placeholders and validate platform TOML through schema callbacks.
