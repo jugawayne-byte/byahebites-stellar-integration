@@ -17,7 +17,7 @@ run = "pnpm --filter @workspace/byahebites-stellar-integration run dev"
 [services.production]
 build = [ "pnpm", "--filter", "@workspace/byahebites-stellar-integration", "run", "build" ]
 serve = "static"
-publicDir = "artifacts/byahebites-stellar-integration/dist/public"
+publicDir = "artifacts/byahebites-stellar-integration/.deployment/public"
 
 [[services.production.rewrites]]
 from = "/*"
