@@ -1,0 +1,28 @@
+# Dependencies & Build
+node_modules/
+dist/
+build/
+.next/
+out/
+target/
+Cargo.lock
+
+# Environment & Keys
+.env
+.env.local
+.env.*.local
+*.secret
+*.pem
+*.key
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Soroban / Stellar CLI artifacts
+.soroban/
+.stellar/

@@ -1,0 +1,35 @@
+{
+  "name": "byahebites-stellar-integration",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ByahéBITES Soroban Credential Layer on Stellar Testnet",
+  "workspaces": [
+    "packages/*",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=frontend",
+    "build": "npm run build --workspace=packages/canonical-hasher && npm run build --workspace=frontend",
+    "test:hasher": "npm run test --workspace=packages/canonical-hasher",
+    "test": "npm run test:hasher",
+    "seed": "tsx scripts/seed-pilot-cohort.ts",
+    "verify": "tsx scripts/verify-records.ts",
+    "evidence": "tsx scripts/generate-evidence.ts"
+  },
+  "keywords": [
+    "stellar",
+    "soroban",
+    "smart-contracts",
+    "msme",
+    "credentials",
+    "philippines",
+    "tourism"
+  ],
+  "author": "Joel Wayne Ganibe & Janus Ladero (ByahéBITES)",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.0"
+  }
+}
