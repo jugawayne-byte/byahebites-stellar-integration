@@ -1,0 +1,300 @@
+
+Instawards Statement of Work (SOW)
+30-Day Scoped Engagement
+ByahéBITES Soroban Credential Layer — a tightly scoped, execution-focused sprint to anchor MSME & creator identity on Stellar testnet
+1. Project & Team Information
+Project Name:
+ByahéBITES Soroban Credential Layer
+Builder / Team Name:
+ByahéBITES
+Primary Contact (Name + Email):
+Joel Wayne Ganibe — joelganibe@tapatgov.ph/jugawayne@gmail.com
+Team Members:
+Joel Ganibe (System Architect)
+Janus Ladero (Soroban/Web3 Engineer)
+Ronnie Vivar (Editorial Metadata Lead)
+Ambassador Chapter:
+Stellar Philippines
+Ambassador Chapter Lead:
+Armielyn Obinguar
+Date Submitted:
+2026-08-24 (v2)
+Suggested Sprint Start Date:
+On approval (within SDF's 3–5 business-day review window)
+
+2. Instawards Overview & Intent
+2.1 Instawards Purpose (for Builder Context)
+Instawards are designed to support short, clearly scoped, execution-focused work that helps a project make tangible progress toward building on Stellar. Instawards are meant to fund specific, achievable outcomes that can be completed and demonstrated within 30 days or less.
+This SOW represents a shared commitment between the Builder and the Ambassador Chapter Lead on what will be delivered, why it matters, and how success will be verified.
+3. Problem Statement & Objective
+Problem Being Addressed
+What specific problem, gap, or blocker is this Instaward intended to solve?
+ByahéBITES Nearby — Hanapin ang kainan sa budget mo — is now being deployed with pilot LGUs as a real-time MSME discovery engine used by LGUs, creators, and TPB/DOT for culinary tourism circuits. However, the platform lacks a verifiable on-chain identity layer for: LGU-issued MSME verification, creator contribution proofs, trust signals for TPB/DOT dashboards, wallet-based compensation flows, and cross-regional consistency in MSME validation. Every trust signal in the platform today — MSME readiness, creator output, editorial validation — lives off-chain in a private database, invisible and unverifiable to anyone outside it. This gap prevents TPB/DOT from using ByahéBITES as national tourism infrastructure, because verification and contribution signals are still off-chain and cannot be independently audited.
+Objective of This Instaward
+In one or two sentences, what will be true at the end of 30 days if this Instaward is successful?
+At the end of 30 days, ByahéBITES will have a live Soroban credential layer on Stellar testnet: an MSME Credential Contract, a Creator Contribution Contract, wallet onboarding flows, Soroban RPC contract-state lookup, and a working demo frontend/backend — with at least 10 real MSMEs and 12 real creators credentialed (≥ 22 net-new Stellar wallets) where chapter-supported participant onboarding succeeds, every record readable via a documented Soroban RPC query and every transaction hash resolvable by non-technical reviewers on Stellar Expert (Testnet). All work is testnet-only.
+
+3.1 Existing Work & Current Gaps
+ByahéBITES Nearby — Hanapin ang kainan sa budget mo — is not starting from zero. The platform is now being deployed with pilot LGUs as a real-time MSME discovery engine: the MSME registry and circuit-based discovery are live, the editorial pipeline (LIT Magazine at https://LIT.komiksguild.com, Kom8ks at https://kom8ks.com) is actively producing content about real MSMEs, and the React/Supabase stack already serves LGU and creator users. This Instaward adds an on-chain layer to a running platform — it is not a cold start.
+Existing capabilities include MSME registry and profiling, circuit-based discovery and B2C listing, editorial metadata workflows for creator content, pilot-LGU onboarding processes, and a creator ecosystem of 120 registered creators on kom8ks.com (project-reported). The platform's content flywheel is already turning — MSME registrations trigger LIT editorial field visits, published stories drive traveler discovery, and LGU analytics inform the next brief — with LIT Magazine reaching 10,171 verified readers (project-reported): an audience that already travels, and the distribution loop participating creators plug into. Current limitation: every trust signal — MSME readiness, creator contribution, editorial validation — lives off-chain in a private database. The sprint closes exactly that gap with two Soroban contracts and a standalone verification demo; the contracts themselves are new code, scoped to fit 30 days.
+3.2 Target Users and Validation Scope
+Target users — four groups plus the chapter that seeds them:
+•MSMEs — tourism MSMEs (food, craft, and experience providers) who need a verifiable readiness identity that LGUs and national agencies can trust without phone calls and paperwork.
+•Creators — Kom8ks/LIT creators (writers, photographers, comic artists) who need portable, write-once proof of published contributions — the prerequisite for any future compensation path. The Kom8ks ecosystem already counts 120 registered creators (project-reported).
+•LGUs — who need to issue machine-readable readiness credentials instead of paper/PDF certifications.
+•TPB/DOT — who need to read on-chain trust signals for national tourism dashboards and circuit promotion.
+•Ecosystem — Stellar Philippines contributors support onboarding of the first MSMEs and creators (chapter activity, outside this budget) and put real credentials through the contracts.
+ 
+Validation scope. This sprint validates on-chain credential issuance (an issuer-allowlisted wallet → a live credential queryable by MSME wallet), write-once contribution recording, wallet onboarding, and Soroban RPC contract-state lookup (Horizon/Stellar Expert provide transaction-level visibility). It does not validate LGU governance workflows (multi-signature issuance, revocation), compensation payout mechanics, production registry logic, or mainnet readiness — those are SCF Build Award scope.
+3.3 Narrowed 30-Day Outcomes
+At the end of this sprint:
+1. MSME credential issuance — an authorized issuer issues a PSGC-coded readiness credential on-chain. Acceptance: any reviewer can read it by MSME wallet via the documented Soroban RPC query under the published contract ID; the deployment tx hash resolves on Stellar Expert (Testnet).
+2. Creator contribution proofs — a published contribution (story, photo, comic) is recorded write-once, linked to an MSME and a circuit by content hash. Acceptance: a duplicate write attempt is publicly rejected on-chain.
+3. Wallet flows validated — ≥ 10 MSME wallets and ≥ 12 creator wallets connect and sign via Stellar Wallets Kit where chapter-supported participant onboarding succeeds (chapter activity, not a funded deliverable; subject to consent and qualifying-content completion). The cohort is sized to exercise the connect-and-sign and duplicate-rejection paths with real signers, beyond synthetic tests.
+4. Public verifiability — every credential and contribution appears on a published tx hash list resolvable on Stellar Expert (Testnet), with contract state readable via Soroban RPC, without technical expertise.
+ 
+“Qualifying content” rubric (fixed before onboarding begins): eligible formats — an original story, photo set, or comic featuring a pilot-LGU MSME; required metadata — creator wallet, MSME ID, circuit ID, publication URL, publication date; review process — LIT/Kom8ks editorial sign-off; content-freeze point — the published version at sign-off is the canonical record that is hashed (later edits produce a new commitment, never an overwrite); authorized submitter — the creator signs record_contribution from their own wallet.
+The two contracts are new code, but the sprint is deliberately bounded: two Soroban contracts plus a minimal demo, not the ByahéBITES platform. None of the four deliverables touches the core platform codebase; the demo stands alone so reviewers can verify the full lifecycle without exposure of ByahéBITES core IP.
+3.4 The Gap & Current Challenges
+Philippine domestic tourism promotion runs on trust signals that are either private, paper-based, or platform-locked. The ways MSME readiness and creator contribution are proven today all fail for a national, multi-agency rollout:
+Approach
+Key Limitation
+Off-chain platform databases (ByahéBITES today)
+Readiness signals and contribution records are invisible outside the platform — LGUs and TPB/DOT cannot independently verify them, and creators cannot carry their track record anywhere.
+Paper/PDF LGU certifications
+Not machine-readable, not queryable, easy to forge, and impossible to aggregate into national dashboards or circuit-level readiness views.
+Generic badge /attestation services
+Not Stellar-native, no wallet-based identity, and no path to on-chain compensation — creators get a graphic, not a verifiable record.
+
+3.5 Why Stellar & Ecosystem Impact
+Stellar makes per-entity credentialing economically viable and publicly verifiable at national scale. The credential layer is built natively on Stellar developer tooling:
+•Stellar technologies used: Soroban smart contracts (MSME Credential Contract, Creator Contribution Contract), StellarWalletsKit (Freighter, xBull, Albedo, LOBSTR, Hana) for client-side signing, and Soroban RPC for contract-state reads (Horizon and Stellar Expert provide transaction- and account-level visibility).
+•Near-zero fees (<$0.01): credential issuance costs fractions of a cent, so credentialing thousands of MSMEs stays viable for LGU budgets.
+•Sub-5-second finality: a credential is verifiable almost immediately after an LGU-authorized issuer signs it.
+•On-chain growth: every credential mints measurable network activity — a funded net-new wallet, a Soroban contract invocation, and a contract-state record readable via Soroban RPC that persists and remains auditable beyond the sprint. Credentialing MSMEs and creators brings non-crypto-native users onto Stellar and directly grows Soroban invocation volume and new-wallet creation — the core on-chain KPIs this sprint reports against.
+•Equitable access: tourism MSMEs and independent creators are precisely the underserved economic actors the Stellar network exists to reach; a verifiable on-chain identity gives them portable proof of economic activity — a first step toward equitable access to digital financial services.
+•Ecosystem public good: the public repo ships two reusable Soroban patterns — an issuer-allowlisted credential contract and a write-once, replay-guarded contribution registry — a composable reference implementation other Stellar builders in identity, attestation, and creator-economy verticals can study, fork, and extend.
+Why now. ByahéBITES Nearby — Hanapin ang kainan sa budget mo — is now being deployed with pilot LGUs, with an editorial pipeline (LIT Magazine, Kom8ks) actively producing content about real MSMEs (see https://LIT.komiksguild.com and https://kom8ks.com), with 120 registered creators already active in the Kom8ks ecosystem and 10,171 verified LIT Magazine readers consuming its output (traction figures are project-reported). The missing piece is exactly the verifiable identity layer this sprint builds. Setting the credential convention now — before national circuit rollout — is far cheaper than retrofitting on-chain identity after off-chain registries have hardened.
+Policy window. National policy now compels the demand side this sprint serves. The DOT Food and Gastronomy Tourism Strategic Framework and Roadmap 2024–2029 (launched May 2025) mandates culinary-zone mapping and food-circuit curation with LGUs; RA 12254, the E-Governance Act (signed September 5, 2025; IRR in force since April 2026), directs DICT to provide ready-to-use eLGU systems and requires LGUs to adopt them; and a DILG Memorandum Circular (January 2026) directs LGUs to digitalize and streamline tourism-enterprise services. The ByahéBITES LGU console is built to answer these mandates — and every verification LGUs are now directed to perform digitally is a candidate to become an on-chain credential rather than another private database entry.
+Sources: RA 12254 full text — https://www.lawphil.net/statutes/repacts/ra2025/ra_12254_2025.html (IRR: https://lawphil.net/statutes/repacts/ra2026/pdf/irr_12254_2026.pdf) · DOT Roadmap launch — https://www.pna.gov.ph/articles/1250995 · DILG directive to LGUs (January 2026) — https://mb.com.ph/2026/01/13/expand-digitalization-services-for-tourism-related-business-dilg-tells-lgus
+3.6 Sprint Constraints & Targets
+•Public repo: the Soroban contracts and demo frontend/backend ship in a standalone public repository for reviewer verification; the core ByahéBITES platform remains proprietary and is entirely out of scope. The repo carries an OSI-approved permissive license (Apache-2.0 or MIT, matching Soroban ecosystem convention) from its first public commit.
+•Testnet: all Instaward work is built and validated on Stellar testnet — no mainnet funds are at risk, and no non-testnet activity of any kind.
+•Validation targets: committed unconditionally: deployed contracts, demo, documentation, and a complete evidence package. Conditional on participant consent, chapter-supported onboarding, and qualifying-content completion: ≥ 10 MSME credential records, ≥ 12 contribution records, ≥ 22 unique wallets, and a complete tx hash list resolvable on Stellar Expert (Testnet).
+•No token: contribution proofs are non-transferable, write-once records — not tokens. No token sale, no native token, no token economics of any kind in this sprint.
+•Why Instawards: a bounded 30-day execution sprint delivering the on-chain identity layer — not an open-ended platform build-out.
+3.7 How It Works
+LGU-authorized issuer verifies MSME readiness (existing off-chain LGU process)
+↓
+CredentialContract.issue_credential(msme_wallet, readiness_attrs, circuit_id) — credential live on testnet
+↓
+Creator publishes a story / photo / comic about the MSME or LGU
+↓
+ContributionContract.record_contribution(creator_wallet, msme_id, content_hash) — write-once, replay-guarded
+↓
+Anyone queries contract state via Soroban RPC → credential + contribution status surfaced (tx hashes inspectable on Stellar Expert)
+↓
+Demo frontend shows wallet connect, issuance, and lookup end-to-end
+3.8 Architecture & Trust Model
+The full ByahéBITES architecture runs in three layers (see diagram below): a Content Layer (LIT Magazine editorial engine, Kom8ks creator amplification), a Platform Layer (ByahéBITES.app registry/discovery, LGU Console verification, TPB/DOT national console), and a Stellar Layer (Soroban contracts, StellarWalletsKit, Soroban RPC). This Instaward builds only the Stellar Layer — the two Soroban contracts — plus a minimal standalone demo. The LIT, Kom8ks, LGU Console, TPB/DOT Console, and ByahéBITES.app components in the diagram are existing or roadmap systems and are explicitly out of scope.
+
+Figure 1 — ByahéBITES three-layer architecture. This Instaward builds only the Stellar Layer (bottom).
+Known limitation, stated plainly: for this sprint, the LGU verification role is represented by a single demo issuer key held by the team, and credential issuance is permissioned to an issuer allowlist in the contract. Real LGU-console workflows — multi-signature LGU issuance, credential revocation governance, and issuer rotation — are named roadmap work for the SCF Build Award and are out of scope for this 30-day sprint. The contracts bound what the issuer key can do (issue credentials with declared attributes; nothing else — it cannot move funds, and contribution records are write-once), and every action lands on the public ledger where anyone can audit it. Issuer multisig, issuer rotation, revocation authority, and dispute processes are future work — this prototype is not decentralized institutional governance, and “LGU-verified” here means issued under the demo key standing in for the future LGU role, not an official LGU attestation.
+Privacy boundary and public schema. The only data written on-chain is the minimal public credential schema: issuer address, MSME or creator wallet address, PSGC jurisdiction code, readiness-status enum, content commitment (SHA-256 hash of the off-chain canonical record), issued-ledger sequence number, a reserved revoked-ledger placeholder field, and schema version. Personal data, unpublished editorial content, private LGU assessments, raw creator submissions, business details, and platform records stay off-chain in the private platform. A content commitment proves only that a submitted canonical record matches the recorded hash — it does not prove authorship, copyright ownership, factual accuracy, LGU approval, or publication status. Credentials are non-expiring in this sprint.
+Revocation model (this sprint). The schema reserves the revoked-ledger field as a placeholder only — the sprint contracts expose no revocation function. Revocation authority, multisig governance, issuer rotation, and dispute processes are SCF Build scope, stated plainly so the sprint is not read as a complete revocation system. This 30‑day prototype does not implement revocation. A placeholder field is included for future governance design. 
+Credential identity & lookup. Each MSME wallet holds one current credential record, keyed by wallet address; re-issuance by an allowlisted issuer updates the record in place, and prior states remain auditable in testnet transaction history. Contribution records are keyed (creator_wallet, content_hash): the same creator cannot record the same content twice, a second attempt with an identical key is rejected on-chain, and one creator may record many distinct contents. Verifiers read records directly by key — no ambiguous selection.
+Canonical serialization & hashing. Content commitments are SHA-256 digests over a domain-separated canonical serialization (UTF-8 encoding, fixed field ordering, NFC Unicode normalization, domain-separation prefix “byahebites-credential-v1”). The full specification and cross-language test vectors (Rust + TypeScript) ship in the public repo, so on-chain hashes and off-chain recomputation are guaranteed to agree.
+Issuer-key model (testnet). The issuer is a standard Stellar account address held in the contract's issuer allowlist; authorization is enforced on-chain by require_auth on the issuer address — no credential can be issued without the issuer's signature. The allowlist is administered by the contract admin (the team's deployer key), which can add or remove issuer addresses; this centralized-for-testnet arrangement is disclosed openly and is replaced by multisig governance in the SCF Build phase. The testnet secret key is supplied to deployment and lifecycle scripts via environment variable or local secret manager and never enters the repository (the repo ships a .env.example placeholder and a .gitignore covering it).
+Note on the architecture diagram: the “Soroban contribution credential” arrows in the diagram refer to the write-once contribution credentials built in this sprint — non-transferable records, not tokens. “Compensation payout → Creator Wallet” is roadmap functionality and is not built or funded by this Instaward. The “Horizon API” element in the diagram denotes ledger-query tooling generally: in this sprint, contract-state reads use Soroban RPC, while Horizon and Stellar Expert provide transaction- and account-level visibility.
+3.9 Reviewer Feedback Addressed
+•Achievable 30-day scope: the proposal keeps only four engineering outcomes and defers LGU governance (multi-sig issuance, revocation), compensation payouts, production registry logic, mainnet, mobile, and token economics to follow-on work.
+•Technical-only budget: all $5,000 is tied to contract development, demo build, validation, and verification artifacts. No marketing, business development, legal, operations, hosting, or paid infrastructure costs are included.
+•Security & decentralization: issuers and creators sign from their own wallets via StellarWalletsKit, private keys never enter the demo, testnet only, and every credential is verified on the public Stellar ledger. The single demo-issuer-key limitation is disclosed in §3.8, not hidden.
+•Not starting from zero: the sprint builds on ByahéBITES Nearby, now being deployed with pilot LGUs (project-reported), an active editorial pipeline (https://LIT.komiksguild.com, https://kom8ks.com) reaching 10,171 verified readers through a working content flywheel, and 120 registered creators (project-reported figures) — not a concept-stage idea.
+4. Scope of Work (30-Day Deliverables)
+Important guidance: This scope must be achievable within 30 calendar days. If the work feels larger, it should be reduced or split into more achievable phases.
+4.1 In-Scope Deliverables
+Deliverable
+Description (What will be built or produced?)
+Why this matters
+Deliverable 1
+MSME Credential Contract: A Soroban smart contract that issues LGU-verified MSME credentials — PSGC-coded, with readiness attributes and circuit participation — behind an issuer allowlist. Queryable by MSME wallet. Public fields: issuer address, MSME wallet, PSGC code, readiness-status enum, content commitment, issued-ledger sequence, reserved revoked-ledger placeholder, schema version; one current credential per MSME wallet — re-issuance updates the record in place (§3.8). Deployed on Stellar testnet with contract ID + deployment tx hash. Acceptance outcome: a reviewer can read any issued credential by MSME wallet via the documented Soroban RPC query; the deployment tx hash resolves on Stellar Expert (Testnet); a non-allowlisted wallet cannot issue.
+Anchors LGU verification on-chain, enabling TPB/DOT to read trust signals for circuits and key readiness indicators (KRIs).
+Deliverable 2
+Creator Contribution Contract: A write-once Soroban contract that records creator contributions (stories, photos, comics) linked to MSMEs and circuits by content hash. Duplicate or overwrite attempts are rejected. Uniqueness key: (creator_wallet, content_hash) — the same creator cannot record the same content twice (§3.8). Public fields: creator wallet, MSME ID, circuit ID, content commitment (SHA-256), recorded-ledger sequence (§3.8). Deployed on testnet. Acceptance outcome: a reviewer can observe a duplicate-write attempt publicly rejected on-chain.
+Gives creators verifiable contribution proofs and links LIT/Kom8ks content to tourism circuits — the prerequisite for any compensation path.
+Deliverable 3
+Demo Frontend + Backend: A minimal public demo: wallet connect via StellarWalletsKit, credential issuance UI, contribution issuance UI, Soroban RPC contract-state lookup, and XDR build/submit endpoints. The lookup verifier fails closed: malformed input, commitment mismatch, wrong network, unknown credential (successful read, no matching commitment), and unavailable state (RPC, simulation, or decoding failure) each produce a distinct non-“valid” result — never a misleading positive. Ships in a standalone public repo, separate from the core platform. Acceptance outcome: a reviewer connects a wallet, issues a credential, records a contribution, and reads it back via Soroban RPC — all from the live demo URL.
+Allows reviewers to see the system working end-to-end — issue, record, look up — without exposing ByahéBITES core IP.
+
+
+Deliverable
+Description (What will be built or produced?)
+Why this matters
+Deliverable 4
+Validation & Evidence Package: the full credential lifecycle exercised on testnet (issuance, duplicate rejection, fail-closed lookups), a passing test-suite report, a complete tx hash list, documentation + integration guide with a step-by-step verification guide, and a 3–5 minute screen-captured engineering walkthrough. Where chapter-supported participant onboarding succeeds (subject to consent, wallet onboarding, and qualifying-content completion — onboarding is not a funded deliverable), the package also includes ≥ 10 MSME credential records and ≥ 12 contribution records from real pilot participants drawn from the existing Kom8ks ecosystem (project-reported, 120 members). Acceptance outcome: every tx hash on the list resolves on Stellar Expert (Testnet) to a real credential or contribution.
+Demonstrates measurable on-chain Stellar activity with independently inspectable evidence. A non-technical reviewer can verify every record on Stellar Expert (Testnet).
+
+ 
+Out-of-Scope (Explicitly Not Included)
+List anything that might be assumed but is not included in this Instaward scope.
+• Full ByahéBITES backend, MSME registry logic, or circuit builder
+• LGU console, TPB/DOT console, or any government-facing dashboards
+• Creator amplification engine or LIT Magazine editorial systems
+• TAPATGOV modules (CLIMA, VOICE, FPIC, GOAL)
+• Multi-signature / decentralized LGU issuance governance, credential revocation, issuer rotation, and dispute processes (roadmap: SCF Build Award)
+• On-chain compensation payouts to creator wallets (roadmap)
+• Mainnet deployment
+• Mobile apps (iOS/Android)
+• Any token sale, native token, or transferable contribution tokens
+• Third-party security audit or formal verification of the contracts
+• Any non-testnet activity
+
+
+4.2 Deliverable-Aligned Budget Request
+Requested Budget Amount
+Rationale for Budget Request
+$5,000 USD (paid in XLM)
+166.7 hours of Soroban + Web3 development at $30/hr, aligned to deliverables:
+• D1 MSME Credential Contract — 40 hrs ($1,200)
+• D2 Creator Contribution Contract — 30 hrs ($900)
+• D3 Demo frontend + backend, Soroban RPC integration — 45 hrs ($1,350)
+• D4 Test automation, evidence-package tooling, integration docs, recorded engineering walkthrough — 35 hrs ($1,050)
+• Cross-cutting: QA, deployment, release engineering — 16.7 hrs ($500)
+All budgeted hours are engineering work — no video production, marketing, coordination, or other non-engineering expenses. Approximate split: ~125 engineering hours / ~42 QA-and-verification hours. Funds compensate contributors and cover execution-related expenses only. No marketing, hosting, or infrastructure costs — the demo runs on free-tier static hosting and SDF's public testnet infrastructure, so no infrastructure budget is required.
+
+5. 30-Day Execution Plan & Timeline
+5.1 Weekly Breakdown
+Week
+Planned Work
+Expected Output
+Week 1
+Contract scaffolding + MSME credential logic (issuer allowlist, readiness attributes, circuit participation), unit + negative-path tests (unauthorized issuer, malformed fields, invalid readiness values), testnet deploy
+MSME Credential Contract deployed on testnet (contract ID + tx hash)
+Week 2
+Creator Contribution Contract + write-once / replay-guard logic, content-hash linking, unit + negative-path tests (duplicate, overwrite attempts), testnet deploy
+Creator Contribution Contract deployed on testnet (contract ID + tx hash)
+Week 3
+Demo backend (XDR build/submit + Soroban RPC lookup) + demo frontend (wallet connect via StellarWalletsKit, credential issuance UI, contribution issuance UI)
+Working public demo showing credential issuance + contribution proofs end-to-end
+Week 4
+Validation engineering: run full lifecycle + complete test suite on testnet, compile tx hash list and evidence package, record screen-captured walkthrough, finalize documentation + integration & verification guides; participant-recorded credentials compiled where chapter-supported onboarding succeeds
+Complete evidence package: full tx hash list, test report, 3–5 min walkthrough video, integration + verification guides; ≥10 MSME credentials + ≥12 contribution records where onboarding succeeds
+
+6. Evidence of Completion (Required)
+Important guidance: Evidence should be clear, verifiable, and easy to review by the Ambassador Chapter Lead with minimal technical expertise.
+6.1 Planned Evidence to Be Submitted
+Deliverable
+Evidence Type (link, repo, demo, screenshot, doc, tx hash, etc.)
+Description
+Deliverable 1
+Public contract repo + contract ID + deployment tx hash
+MSME credential contract deployed on testnet; verifiable on Stellar Expert (Testnet)
+Deliverable 2
+Public contract repo + contract ID + deployment tx hash
+Creator contribution contract deployed on testnet; verifiable on Stellar Expert (Testnet)
+Deliverable 3
+Live demo URL + screenshots + code links
+Working demo frontend/backend: wallet connect, issuance UIs, Soroban RPC lookup
+Deliverable 4
+Screen-captured walkthrough (3–5 min) + docs + integration & verification guides + test report + complete tx hash list
+Validation package: full lifecycle exercised on testnet, plus ≥10 MSME credential records and ≥12 contribution records where participant onboarding succeeds
+
+ 
+Acceptance-to-evidence manifest — every acceptance outcome maps to a specific, inspectable artifact:
+Acceptance outcome
+Artifact reviewers inspect
+D1: credential readable by MSME wallet
+Contract ID + deployment tx hash (resolves on Stellar Expert Testnet); documented Soroban RPC read with expected output; repo path /contracts/msme-credential
+D2: duplicate write publicly rejected
+Contract ID; named acceptance test (test_duplicate_write_rejected); rejection tx hash on Stellar Expert
+D3: end-to-end demo from live URL
+Live demo URL; repo path /demo; walkthrough video with timestamps; fallback RPC config + local run command
+D4: evidence package complete (+ participant records where onboarding succeeds)
+Complete tx hash list (CSV + JSON in repo); one Stellar Expert link per record; test report; screen-captured walkthrough video
+Reproducibility path
+Repository URL + tagged commit; pinned toolchain (Rust, Soroban CLI/SDK, Node) + lockfiles; build and test commands; .env.example template; contract IDs + network configuration; expected WASM SHA-256 in release notes; step-by-step verification guide
+
+ 
+Contract test plan — beyond happy-path issuance, the shipped suite demonstrates:
+•an unauthorized (non-allowlisted) issuer attempt is rejected
+•malformed field inputs are rejected
+•invalid readiness-enum values are rejected
+•a duplicate contribution (same (creator_wallet, content_hash)) is rejected
+•an overwrite attempt on an existing record is rejected
+•wrong-network verification yields a distinct non-“valid” state
+•unavailable RPC state yields a distinct non-“valid” state
+•unknown-record lookup yields a distinct non-“valid” state
+6.2 Evidence Verification Checklist (For Ambassador Use)
+For each deliverable, the Ambassador Chapter Lead will assess whether evidence is present and sufficient.
+Deliverable
+Evidence Present
+Evidence Partial
+Evidence Missing
+Comments
+Deliverable 1
+☐
+☐
+☐
+
+
+Deliverable 2
+☐
+☐
+☐
+
+
+Deliverable 3
+☐
+☐
+☐
+
+
+Deliverable 4
+☐
+☐
+☐
+
+
+
+6.3 Success Metrics
+•Technical milestone: MSME Credential Contract issues a PSGC-coded credential, readable by MSME wallet via the documented Soroban RPC query under the published contract ID; the deployment tx hash resolves on Stellar Expert (Testnet).
+•Technical milestone: Creator Contribution Contract records a write-once contribution linked to an MSME and circuit; a duplicate-write attempt is rejected on-chain and visible to reviewers.
+•Technical milestone: demo frontend supports wallet connect via StellarWalletsKit (Freighter plus at least one additional Stellar wallet), credential issuance, contribution recording, and Soroban RPC lookup — all from the live URL.
+•Verification target: ≥ 10 MSME credential records and ≥ 12 contribution proofs recorded where participant onboarding succeeds — subject to consent, wallet onboarding, and qualifying-content completion; the engineering deliverables are not blocked by onboarding delays. Every tx hash on the published list resolves on Stellar Expert (Testnet).
+•Ecosystem KPIs: net-new funded wallets (≥ 22), Soroban contract invocations, and contract-state records readable via Soroban RPC are counted and reported in the validation package — measurable on-chain KPIs that persist and remain publicly auditable after the sprint ends.
+6.4 Risks & Mitigations
+•Risk: pilot-LGU issuers are not available during the sprint window. Mitigation: the demo issuer key (disclosed in §3.8) issues credentials for real MSMEs already in the pilot pipeline; LGU multi-sig issuance is roadmap work, not a sprint dependency.
+•Risk: Soroban contract development takes longer than the two-week contract phase. Mitigation: both contracts are single-purpose with no token economics; the write-once and issuer-allowlist patterns are well-documented Soroban idioms, and the demo frontend reuses StellarWalletsKit reference code.
+•Risk: participant availability is outside engineering control. Mitigation: the engineering deliverables (contracts, demo, test suite, documentation, evidence package) are committed unconditionally and are not blocked by onboarding delays; participant-recorded credentials are conditional on consent, chapter-supported onboarding (chapter activity, not funded here), and qualifying-content completion. Recruitment draws on the pilot-LGU pipeline and the existing 120-member Kom8ks ecosystem (project-reported) — activation of an existing base, not cold recruitment.
+•Risk: reviewers cannot verify evidence without technical help. Mitigation: every deliverable ships with a tx hash list and a 3–5 minute screen-captured walkthrough narrated for a non-technical audience; Stellar Expert links require no wallet or code knowledge.
+•Risk: the live demo URL becomes unavailable during review (hosting or a single RPC endpoint fails). Mitigation: the demo frontend is a static site with a documented fallback RPC configuration, and the repo includes a local reproduction path (one-command local run against testnet) so evidence review never depends on our hosting.
+•Risk: contract builds differ across reviewer environments. Mitigation: the release pins Rust, Soroban CLI/SDK, and Node versions plus lockfiles, build commands, and the expected WASM checksum; the repo distinguishes byte-for-byte reproducibility from functional reproducibility (same behavior, verified via the shipped test suite).
+6.5 Final Success Criteria
+The Instaward is complete when reviewers can verify all four sprint outcomes: 
+a PSGC-coded MSME credential is readable via Soroban RPC (deployment tx hash resolvable on Stellar Expert Testnet), 
+a write-once creator contribution is recorded and a duplicate attempt is publicly rejected, 
+the demo supports wallet connect and contract-state lookup from a live URL, and 
+the evidence package is complete — with ≥ 10 MSMEs plus 12 creators credentialed where participant onboarding succeeds.
+The sprint is not complete merely because the contracts are deployed or the demo UI exists; each deliverable must include code, a demo artifact, and at least one relevant on-chain transaction hash or ledger-backed verification path.
+7. Next-Step Alignment
+7.1 Anticipated Next Step After Completion
+After this Instaward, the most likely next step is:
+☒ Apply to SCF Build Award
+☐ Continue development independently
+☒ Apply for a follow-on Instaward (if eligible)
+☐ Seek other ecosystem support
+☐ Other:
+The credential layer delivered here is the on-chain foundation of the full ByahéBITES national architecture (LGU console, TPB/DOT console, compensation path). A successful 30-day sprint with real credentialed MSMEs and creators — and measurable net-new wallets and Soroban invocations — is the evidence base for an SCF Build Award application with a defined testnet-to-mainnet path.
+8. Instawards Constraints Acknowledgement
+By submitting this SOW, the Builder acknowledges:
+☑ This scope will be completed within 30 days or less.
+☑ Instawards support execution, not open-ended exploration.
+☑ A project may receive no more than two follow-on Instawards.
+☑ Each Instaward is capped at $5,000.
+☑ Total Instawards funding may not exceed $15,000.
+9. Submission Confirmation
+Once finalized, this Statement of Work will be submitted by the Ambassador Chapter Lead (Armielyn Obinguar, Stellar Philippines) via the Instawards Airtable submission form for review and approval.
+GITHUB: jugawayne-byte/byahebites-stellar-integration 
+
+
