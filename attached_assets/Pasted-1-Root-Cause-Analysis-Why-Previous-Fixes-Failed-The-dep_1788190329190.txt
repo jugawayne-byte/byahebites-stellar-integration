@@ -1,0 +1,113 @@
+1. Root Cause Analysis: Why Previous Fixes Failed
+The deployment failure was caused by three compounding issues across build configuration, dependency placement, and health probe routing. Trying to work around missing build outputs by staging files to .deployment/ failed because the build itself was aborting before outputs could be generated, and the API service was crashing on startup due to missing production dependencies.
+
+A. Frontend Build Pipeline Abort (Missing dist/public)
+The Error: static artifact publicDir does not exist
+Root Cause: artifacts/byahebites-stellar-integration/vite.config.ts required process.env.PORT unconditionally during config initialization. The deployment build pipeline executes pnpm --filter byahebites-stellar-integration run build without setting a PORT environment variable.
+Effect: Vite crashed during configuration loading before building static assets. As a result, dist/public was never created during the deployment build step.
+B. API Server Missing Runtime Module (MODULE_NOT_FOUND)
+The Error: Cannot find module 'pino-pretty' (or supports-color sidecars) and ERR_PNPM_CATALOG_ENTRY_NOT_FOUND_FOR_SPEC
+Root Cause:
+pino-pretty (and its color formatting utility supports-color) was declared under devDependencies instead of dependencies in artifacts/api-server/package.json.
+When pnpm install --prod ran in production, devDependencies were omitted. However, pino logger performed a dynamic/lazy require("pino-pretty") at runtime.
+artifacts/api-server/package.json contained workspace catalog references (e.g., "@types/node": "catalog:"). When evaluated in an isolated production container outside the pnpm workspace root, pnpm threw ERR_PNPM_CATALOG_ENTRY_NOT_FOUND_FOR_SPEC.
+Effect: Node crashed immediately upon startup with MODULE_NOT_FOUND, preventing the API from binding to port 8080.
+C. Liveness Probe Failure (GET /api Returning 500)
+The Error: Deployment health check hitting GET /api failed.
+Root Cause: The GET /api handler performed deep integration tasks (Stellar RPC network calls, reading contract keys) that relied on environment variables defined in .env but missing from the Deployment Secrets panel.
+Effect: When deployment liveness probes pinged GET /api, missing secrets caused unhandled promise rejections, returning 500 Internal Server Error and causing the container orchestrator to kill the deployment.
+2. Systematic Solution & Execution Sequence
+To ensure pnpm install --prod and the deployment build succeed cleanly without custom post-build hacks, apply the following sequence:
+
+Step 1: Fix Frontend vite.config.ts Build Port Fallback
+Modify artifacts/byahebites-stellar-integration/vite.config.ts to provide a fallback value for PORT during build time:
+
+typescript
+
+
+// artifacts/byahebites-stellar-integration/vite.config.ts
+const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 5173;
+export default defineConfig({
+  // ... existing config
+  server: {
+    port,
+  },
+});
+Step 2: Fix API Dependency Placement & Catalog Specs
+Update artifacts/api-server/package.json:
+
+Move pino-pretty to dependencies (or configure pino to use default JSON formatting in production).
+Replace "catalog:" specifiers with fixed semver strings (e.g., "^20.0.0").
+json
+
+
+// artifacts/api-server/package.json
+{
+  "name": "@workspace/api-server",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.19.2",
+    "pino": "^9.0.0",
+    "pino-pretty": "^11.0.0",
+    "@workspace/api-zod": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0"
+  }
+}
+Step 3: Decouple /api Liveness Probe from External Secrets
+Split the /api endpoint into a secret-independent liveness check and a separate /api/status route:
+
+typescript
+
+
+// artifacts/api-server/src/index.ts
+import express from 'express';
+const app = express();
+// Lightweight Liveness Check (Deployment Health Probe)
+app.get('/api', (req, res) => {
+  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+app.get('/api/healthz', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+// Detailed Integration Status Check (Stellar RPC & Secrets)
+app.get('/api/status', async (req, res) => {
+  const rpcUrl = process.env.STELLAR_RPC_URL;
+  const contractId = process.env.STELLAR_CONTRACT_ID;
+  if (!rpcUrl || !contractId) {
+    return res.status(503).json({
+      status: 'degraded',
+      error: 'Missing required Stellar integration environment variables.',
+    });
+  }
+  try {
+    // Perform RPC / Contract ping here
+    res.status(200).json({ status: 'healthy', rpcUrl });
+  } catch (err) {
+    res.status(500).json({ status: 'unhealthy', error: (err as Error).message });
+  }
+});
+3. Verification & Pipeline Confirmation
+Production Build Test:
+
+bash
+
+
+pnpm --filter byahebites-stellar-integration run build
+pnpm --filter api-server run build
+Confirms artifacts/byahebites-stellar-integration/dist/public and artifacts/api-server/dist/index.mjs are generated cleanly.
+Isolated Production Install & Startup Test:
+
+bash
+
+
+cd artifacts/api-server
+pnpm install --prod
+node --enable-source-maps dist/index.mjs
+Confirms the API boots without any Cannot find module error outside the workspace root.
+HTTP Route Probing:
+
+GET http://localhost:8080/api → 200 OK { "status": "ok" } (Liveness)
+GET http://localhost:8080/api/status → 503 Service Unavailable (Report missing secrets gracefully without crashing liveness).
