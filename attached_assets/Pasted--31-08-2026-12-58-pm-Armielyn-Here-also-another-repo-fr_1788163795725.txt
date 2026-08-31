@@ -1,0 +1,82 @@
+[31/08/2026 12:58 pm] Armielyn: Here also another repo from our approved instawards: https://github.com/Velo-Ecosystem-Collection/Velo 
+
+refer here the sample readme
+[31/08/2026 1:16 pm] Julie ann Soriano in reply to Armielyn:
+> Hi @JollyDreamer pls fill up the form via the gdocs shared:...
+Noted 🙏
+[31/08/2026 3:32 pm] Peetah in reply to Armielyn:
+> ‎⁨can you share here the link of your repository cc:...
+https://github.com/FWDP/votes-pulse-project -> VOTES
+
+https://github.com/FWDP/save-project -> SAVE
+
+the repos are already in public.
+[31/08/2026 3:35 pm] Armielyn in reply to Peetah:
+> https://github.com/FWDP/votes-pulse-project -> VOTES...
+where’s the deployed contract on stellar?
+[31/08/2026 3:35 pm] Armielyn: @peetah_q
+[31/08/2026 3:36 pm] Armielyn in reply to Armielyn:
+> Here also another repo from our approved instawards:...
+check this example @peetah_q
+[31/08/2026 3:36 pm] Peetah in reply to Armielyn:
+> ‎⁨where’s the deployed contract on stellar?⁩
+I'll put it there.
+[31/08/2026 3:37 pm] Armielyn: where?
+[31/08/2026 3:37 pm] Armielyn: can u edit too your readme?
+[31/08/2026 3:38 pm] Peetah: yep ill put it on readme since ive stored it on .env file for awhile
+[31/08/2026 3:38 pm] Armielyn: it shouldnt be stored on .env
+[31/08/2026 3:38 pm] Armielyn: stellar reviews your deployed contract too
+[31/08/2026 3:38 pm] Armielyn in reply to Armielyn:
+> Here also another repo from our approved instawards:...
+follow here thanks!
+[31/08/2026 3:39 pm] Peetah: yep. im actually reading it now
+[31/08/2026 3:41 pm] Peetah: ill just so dome hefty modifications on our README.md
+[31/08/2026 3:43 pm] Armielyn: still the same
+[31/08/2026 3:44 pm] Peetah: yeah im doing modifications for this one now.
+[31/08/2026 3:44 pm] Armielyn: it must be visible on your readme not on a diff readme
+[31/08/2026 3:45 pm] Peetah: yep on it now
+[31/08/2026 3:53 pm] Rain in reply to Armielyn:
+> ‎⁨fix this @Jrainregencia for the init.ai repository also the...
+https://github.com/cseanx/INIT.AI
+
+Updated readme.md kindly check if we miss anything 
+
+@aeriumcus
+[31/08/2026 3:54 pm] Armielyn: Looks good!
+[31/08/2026 3:55 pm] Armielyn: Thanks @Jrainregencia
+[31/08/2026 3:55 pm] Peetah: https://github.com/FWDP/votes-pulse-project
+
+Updated the README.md as well. Can you check if we missed anything there or so
+[31/08/2026 3:55 pm] Armielyn in reply to Peetah:
+> https://github.com/FWDP/votes-pulse-project  Updated the...
+why there’s mainnet here?
+[31/08/2026 3:56 pm] Armielyn: testnet only for instawards, remove any sections that has mainnet and etc
+[31/08/2026 3:56 pm] Armielyn: also one repo needed @peetah_q no need for 2 repos
+[31/08/2026 3:57 pm] Peetah in reply to Armielyn:
+> ‎⁨also one repo needed @peetah_q no need for 2 repos⁩
+ah its separate project
+[31/08/2026 3:57 pm] Peetah: that's why its 2 repos
+[31/08/2026 3:57 pm] Armielyn: we need one only
+[31/08/2026 3:57 pm] Armielyn in reply to Armielyn:
+> Here also another repo from our approved instawards:...
+you may align here as well
+[31/08/2026 3:59 pm] Peetah: ah okay. hold on. I'll only do the VOTES then. ill remove the mainnet
+[31/08/2026 4:00 pm] Armielyn: all goods for your team @Jrainregencia we’ll be submitting this to stellar this week 🇵🇭 great work for the polished proposal and repository
+[31/08/2026 4:00 pm] Peetah: done
+[31/08/2026 4:00 pm] Armielyn: add site link on your repo about
+[31/08/2026 4:01 pm] Armielyn: where’s the site of this project? can you add snippets of the site as well on your readme?
+[31/08/2026 4:01 pm] Armielyn: @peetah_q
+[31/08/2026 4:02 pm] Peetah: yep will add it now
+[31/08/2026 4:03 pm] Armielyn: Please take note of your repositories, everyone. 🙏
+
+Most project rejections happen because the repository does not follow the required format or has missing/incomplete information.
+
+Please make sure to double-check your repo and ensure that all requirements, details, and necessary information are complete and properly formatted before submission.
+[31/08/2026 4:06 pm] Armielyn: For projects that do not have a repository or an existing codebase, unfortunately, we will not be able to process your application.
+
+Before submitting the form, please make sure that both your proposal and repository have been reviewed and that all required information is complete.
+
+For Instawards, please note that we will be closing applications this week. After this week, no new projects will be accommodated.
+
+Please double-check all requirements before submitting to avoid rejection or delays. Thank you!
+[31/08/2026 4:07 pm] Armielyn: cc: @candycloser @JollyDreamer @efrenkarlatienza @centaurblue @thewittleprince
