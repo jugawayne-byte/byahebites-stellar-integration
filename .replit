@@ -5,7 +5,7 @@ router = "application"
 deploymentTarget = "autoscale"
 
 [deployment.postBuild]
-args = ["pnpm", "store", "prune"]
+args = ["sh", "scripts/prepare-deployment-outputs.sh"]
 env = { "CI" = "true" }
 
 [workflows]

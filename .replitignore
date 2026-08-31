@@ -3,3 +3,14 @@
 
 # No need to store the pnpm store twice.
 .local
+.git
+
+# Generated dependencies and build output are recreated during publishing.
+node_modules
+**/node_modules
+.cache
+**/.cache
+dist
+**/dist
+target
+**/target

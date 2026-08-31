@@ -5,7 +5,7 @@ creator contribution records.
 
 ## Reviewer links
 
-- [Published demo](https://github-import-jugaway.replit.app/)
+- [Published demo](https://github-import-jugawayne.replit.app/)
 - [Reviewer README and walkthrough](artifacts/byahebites-stellar-integration/README.md)
 - [Deployment evidence JSON](deployments/testnet.json)
 - [Deployment evidence index](deployments/README.md)
