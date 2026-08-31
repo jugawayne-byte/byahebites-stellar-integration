@@ -1,147 +1,148 @@
-## 🔗 Public Demo & Evidence
+# ByahéBITES Soroban Credential Layer
 
-**Live Verifier & Demo Site**  
-https://github-import-jugawayne.replit.app/
+**Soroban-based credential layer for MSMEs and creators, powering ByahéBITES tourism identity on Stellar Testnet.**
 
-**Evidence Bundle Includes:**
-- Contract ID: *(to be added after deployment)*
-- WASM checksum: *(to be added after build)*
-- Soroban Explorer link: *(to be added after deployment)*
-- Test vectors: `/evidence/test-vectors/`
-- Rejected-call evidence: `/evidence/rejected/`
-- Verifier source: `/verifier/`
-- Lifecycle scripts: `/scripts/`
-- Acceptance-to-evidence manifest: `/docs/manifest.md`
+> **Instaward scope:** a standalone, testnet-only 30-day sprint. This repository contains the public demo shell and reviewer documentation. Contract IDs, transaction hashes, and live wallet/RPC evidence must be added after the Soroban contracts are deployed.
 
+[![Network: Stellar Testnet](https://img.shields.io/badge/network-Stellar%20Testnet-0b6b63)](https://stellar.expert/explorer/testnet)
 
-# ByahéBITES Soroban Credential Layer  
-Anchoring MSME & creator identity on Stellar testnet
+## Live demo
 
-## Problem
-Tourism MSMEs, creators, and LGUs rely on trust signals that are off‑chain, private, paper‑based, or platform‑locked.  
-LGU readiness certifications are PDFs; creator contributions live inside private databases; TPB/DOT cannot independently verify MSME readiness or creator output.  
-This prevents ByahéBITES from being used as national tourism infrastructure because verification signals are not publicly auditable.
+**Published demo:** [github-import-jugaway.replit.app](https://github-import-jugaway.replit.app/)
 
-## Solution
-A 30‑day Instaward sprint delivering a **Soroban credential layer** on Stellar testnet:
-- MSME Credential Contract (LGU‑verified readiness, PSGC‑coded)
-- Creator Contribution Contract (write‑once contribution proofs)
-- Wallet onboarding flows for MSMEs and creators
-- Public demo showing issuance + lookup
-- All records verifiable on Stellar Expert (Testnet)
+The demo is intentionally labeled as a demonstration until real contract IDs and wallet wiring are configured. Do not describe browser-local records as on-chain records.
 
-By the end of the sprint, ≥10 MSMEs and 12 creators will have real testnet credentials, with ≥22 net‑new wallets.
+![ByahéBITES live demo preview](docs/images/demo.jpg)
 
-## Features
-### **1. MSME Credential Contract**
-- Issuer‑allowlisted LGU verification  
-- PSGC jurisdiction code  
-- Readiness‑status enum  
-- Circuit participation  
-- SHA‑256 content commitment  
-- Queryable by MSME wallet on Stellar Expert (Testnet)
-- Public lifecycle fields (minimum metadata):
-- Issuer address (Stellar account)
-- Commitment version
-- Status enum (e.g. Issued, Active, Expired, Revoked)
-- Issued timestamp
-- Expiry timestamp
-- Last update timestamp
-- Expiry model:
-- Status is computed dynamically at read time from the stored expiry timestamp.
-- No additional transaction is required to mark a credential as expired.
+## Why this matters
 
+ByahéBITES Nearby — “Hanapin ang kainan sa budget mo” — helps pilot LGUs, creators, and tourism stakeholders discover and promote local MSMEs. This sprint adds a public proof layer for the trust signals that currently live in private systems:
 
+- LGU-issued MSME readiness
+- Creator contribution proofs
+- PSGC-coded tourism jurisdiction
+- Circuit participation
+- Publicly inspectable verification
 
-### **2. Creator Contribution Contract**
-- Write‑once contribution proofs  
-- Replay‑guarded duplicate rejection  
-- Links creator → MSME → circuit  
-- SHA‑256 content commitment  
-- Publicly visible rejection of duplicate writes
+The intended result is portable, machine-readable evidence that TPB/DOT, LGUs, creators, and the public can verify without relying on a private platform database, paper certificate, or platform lock-in.
 
-### **3. Demo Frontend + Backend**
-- Wallet connect via StellarWalletsKit (Freighter + one more wallet)  
-- Credential issuance UI  
-- Contribution issuance UI  
-- Horizon API lookup  
-- Distinct failure modes (malformed input, mismatch, wrong network, unknown credential)
-- 
-- Failure modes:
+## Sprint deliverables
 
-- Unknown credential: successful contract read with no matching commitment.
-- Unavailable state: RPC, simulation, contract-read, or decoding failure.
+1. **MSME Credential Contract** — an issuer-allowlisted Soroban contract for PSGC-coded readiness credentials.
+2. **Creator Contribution Contract** — a write-once, replay-guarded contract linking creator work to an MSME and circuit by SHA-256 commitment.
+3. **Standalone demo** — StellarWalletsKit wallet connection, XDR build/submit endpoints, credential/contribution flows, and Soroban RPC lookup.
+4. **Validation package** — tests, contract IDs, deployment and record transaction hashes, verification guide, screenshots, and a 3–5 minute walkthrough.
 
+## Architecture
 
-### **4. Ecosystem Validation**
-- ≥10 MSMEs credentialed  
-- 12 creator wallets awarded  
-- Complete tx hash list  
-- 3–5 minute demo video  
-- All records verifiable by non‑technical reviewers
+![ByahéBITES three-layer architecture](docs/images/architecture.svg)
 
-## How We Use Stellar
-- **Soroban smart contracts** for credentialing and contribution proofs  
-- **StellarWalletsKit** for wallet connect + signing  
-- **Horizon API** for lookup and verification  
-- **Stellar Expert (Testnet)** for public auditability  
-- **Near‑zero fees** (<$0.01 per credential)  
-- **Sub‑5‑second finality** for instant verification  
-- **Testnet‑only** (no mainnet, no tokens, no payouts)
-  
-- ### Canonical Commitment Serialization
+This Instaward builds only the Stellar layer and a minimal standalone demo. The ByahéBITES platform, LIT/Kom8ks editorial systems, LGU console, and TPB/DOT dashboards are existing or future systems and are outside this sprint.
 
-- Domain-separation string: `byahébites-msme-credential-v1`
-- Encoding: UTF-8 JSON, sorted field order
-- Hash algorithm: SHA-256
-- Test vectors: `/evidence/test-vectors/` (Rust + TypeScript)
+## How the proof flow works
 
+1. An allowlisted issuer signs an MSME credential for a wallet, PSGC jurisdiction, readiness status, and circuit.
+2. A creator signs a contribution record for a qualifying story, photo set, or comic.
+3. The contract stores only the public proof fields and a SHA-256 commitment to the canonical off-chain record.
+4. A reviewer reads contract state through Soroban RPC and follows transaction hashes on Stellar Expert Testnet.
+5. A repeated `(creator_wallet, content_hash)` write is rejected; uncertain lookups fail closed.
 
-## Architecture (Sprint Scope Only)
-This Instaward builds only the **Stellar Layer**:
-- MSME Credential Contract  
-- Creator Contribution Contract  
-- Minimal standalone demo  
-All ByahéBITES platform components (registry, LGU console, TPB/DOT dashboards, editorial systems) are **out of scope**.
+## Public data and trust boundaries
 
-## Snippets / Screenshots / Videos
-*(Placeholders — to be replaced during Week 3–4)*
+### Written on-chain
 
-- `docs/images/demo.png`  
-- Demo video link (to be added)  
-- Contract IDs + deployment tx hashes (to be added)  
-- Tx hash list (to be added)
-  
-- ## Acceptance Checklist
+- Issuer address
+- MSME or creator wallet address
+- PSGC jurisdiction code
+- Readiness-status enum
+- MSME ID and circuit ID where applicable
+- SHA-256 content commitment
+- Issued or recorded ledger sequence
+- Schema version
+- Reserved revocation placeholder
 
-Each requirement maps to a specific artifact:
+### Kept off-chain
 
-- Contract ID: `/docs/contract.md`
-- WASM checksum: `/evidence/wasm-checksum.txt`
-- Deployment tx hash list: `/evidence/tx-hashes.md`
-- Verifier URL: https://github-import-jugawayne.replit.app/
-- Test reports: `/docs/tests/`
-- Rejected-call evidence: `/evidence/rejected/`
-- Demo video: `/docs/demo-video.md`
-- Release assets: `/releases/`
-- Manifest: `/docs/manifest.md`
+- Personal data
+- Raw creator submissions
+- Unpublished editorial content
+- Private LGU assessments
+- Business details
+- Platform records
 
+A commitment proves that a canonical record matches its recorded hash. It does not by itself prove authorship, copyright ownership, factual accuracy, publication status, or official LGU approval.
 
-## Team
+### Explicit testnet limitation
+
+For this prototype, the LGU role is represented by a disclosed demo issuer key and an on-chain issuer allowlist. Multisignature LGU governance, issuer rotation, revocation, and dispute processes are future scope. There is no mainnet deployment, token, payout, or custody model in this sprint.
+
+## Quickstart
+
+```bash
+pnpm install
+pnpm --filter @workspace/byahebites-stellar-integration run dev
+```
+
+Open the local URL printed by Vite. The Replit workflow supplies the required port and base path automatically.
+
+When the contracts are available, add the pinned Rust/Soroban toolchain and run:
+
+```bash
+stellar contract build
+stellar contract deploy --network testnet
+```
+
+See [the deployment guide](docs/deployment-guide.md) and [the verification guide](docs/verification-guide.md).
+
+## Reviewer evidence checklist
+
+- [ ] MSME contract source, tests, contract ID, and deployment transaction hash
+- [ ] Contribution contract source, tests, contract ID, and deployment transaction hash
+- [ ] Live demo URL and screenshots
+- [ ] Freighter plus one additional Stellar wallet tested
+- [ ] Soroban RPC lookup documented with expected output
+- [ ] Unauthorized, malformed, invalid-enum, duplicate, overwrite, wrong-network, unavailable-state, and unknown-record tests
+- [ ] Complete transaction hash list in CSV and JSON
+- [ ] Stellar Expert Testnet link for every listed hash
+- [ ] 3–5 minute screen-captured walkthrough
+- [ ] Participant records where consent and onboarding succeed: target 10 MSMEs, 12 creators, 22 unique wallets
+
+## Known limitations and out-of-scope work
+
+- No mainnet activity
+- No token sale, native token, or transferable contribution token
+- No creator compensation or settlement
+- No credential revocation or dispute workflow
+- No LGU multisig console or issuer rotation
+- No full ByahéBITES registry, circuit builder, editorial engine, or TPB/DOT dashboard
+- No mobile application
+- No third-party security audit or formal verification
+
+## Repository map
+
+```text
+README.md                         # reviewer-facing source of truth
+contracts/                         # Soroban contract sources and contract READMEs
+demo/frontend/                     # standalone demo frontend
+demo/backend/                      # XDR and lookup backend
+docs/images/architecture.svg     # architecture visual
+docs/images/demo.jpg             # demo screenshot
+docs/deployment-guide.md          # Testnet deployment and release steps
+docs/verification-guide.md       # non-technical reviewer walkthrough
+docs/SOW.md                       # imported scope of work
+docs/integration-guide.md        # imported integration notes
+scripts/                          # deployment and lifecycle scripts
+release/                          # imported release notes
+src/                              # Replit preview frontend shell
+```
+
+## Team and next step
+
 **TAPATGOV / ByahéBITES**
-- **Joel Wayne Ganibe** — System Architect  
-- **Janus Ladero** — Soroban / Web3 Engineer  
-- **Ronnie Vivar** — Editorial Metadata Lead  
-Ambassador Chapter: **Stellar Philippines**  
-Chapter Lead: **Armielyn Obinguar**
 
+- Joel Wayne Ganibe — System Architect
+- Janus Ladero — Soroban / Web3 Engineer
+- Ronnie Vivar — Editorial Metadata Lead
+- Stellar Philippines — Ambassador Chapter
 
-
-## Repository Structure
-- `/contract/` — Soroban contracts (MSME, Creator)
-- `/verifier/` — Static verifier site (frontend)
-- `/scripts/` — Deployment and lifecycle scripts
-- `/docs/` — SOW, architecture, tests, manifest
-- `/evidence/` — Test vectors, tx hashes, rejected calls, WASM checksum
-- `/releases/` — Tagged builds and artifacts
-
+The next approval-critical step is to replace the documented placeholders with deployed Testnet contract IDs, real transaction hashes, a published demo URL, and the completed evidence package.
