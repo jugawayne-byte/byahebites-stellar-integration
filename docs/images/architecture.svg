@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="760" viewBox="0 0 1400 760" role="img" aria-labelledby="title desc">
+  <title id="title">ByahéBITES three-layer architecture</title>
+  <desc id="desc">Content and platform systems feed a standalone Stellar Testnet credential layer with Soroban contracts, wallets, and RPC verification.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#f8f2e8"/>
+      <stop offset="1" stop-color="#e9f2ed"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#173f46" flood-opacity=".12"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+      <path d="M0 0L10 5L0 10z" fill="#2c7d78"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="760" rx="28" fill="url(#bg)"/>
+  <text x="70" y="68" font-family="Arial, sans-serif" font-size="30" font-weight="700" fill="#173f46">ByahéBITES credential layer</text>
+  <text x="70" y="102" font-family="Arial, sans-serif" font-size="16" fill="#52696a">Standalone Instaward scope · Stellar Testnet only</text>
+
+  <rect x="70" y="140" width="1260" height="150" rx="22" fill="#fffaf2" stroke="#d9cdbd" stroke-width="2" filter="url(#shadow)"/>
+  <text x="105" y="178" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#a76e19">CONTENT LAYER · EXISTING / ROADMAP</text>
+  <g font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#173f46">
+    <rect x="105" y="205" width="260" height="54" rx="13" fill="#f4e7c7"/><text x="235" y="238" text-anchor="middle">LIT editorial engine</text>
+    <rect x="395" y="205" width="260" height="54" rx="13" fill="#f4e7c7"/><text x="525" y="238" text-anchor="middle">Kom8ks creator network</text>
+    <rect x="685" y="205" width="260" height="54" rx="13" fill="#f4e7c7"/><text x="815" y="238" text-anchor="middle">Qualifying content</text>
+    <rect x="975" y="205" width="260" height="54" rx="13" fill="#f4e7c7"/><text x="1105" y="238" text-anchor="middle">Canonical SHA-256 record</text>
+  </g>
+  <path d="M365 232H395M655 232H685M945 232H975" stroke="#c3913b" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <rect x="70" y="330" width="1260" height="150" rx="22" fill="#f4faf7" stroke="#b8d9cd" stroke-width="2" filter="url(#shadow)"/>
+  <text x="105" y="368" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#2c7d78">PLATFORM LAYER · EXISTING / OUT OF SCOPE</text>
+  <g font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#173f46">
+    <rect x="105" y="395" width="260" height="54" rx="13" fill="#dcefe7"/><text x="235" y="428" text-anchor="middle">ByahéBITES registry</text>
+    <rect x="395" y="395" width="260" height="54" rx="13" fill="#dcefe7"/><text x="525" y="428" text-anchor="middle">LGU verification</text>
+    <rect x="685" y="395" width="260" height="54" rx="13" fill="#dcefe7"/><text x="815" y="428" text-anchor="middle">TPB / DOT dashboards</text>
+    <rect x="975" y="395" width="260" height="54" rx="13" fill="#dcefe7"/><text x="1105" y="428" text-anchor="middle">Pilot tourism circuits</text>
+  </g>
+  <path d="M235 290V395M525 290V395M815 290V395M1105 290V395" stroke="#86b8a8" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <rect x="70" y="520" width="1260" height="170" rx="22" fill="#173f46" stroke="#2c7d78" stroke-width="3" filter="url(#shadow)"/>
+  <text x="105" y="558" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="2" fill="#76d4bd">STELLAR LAYER · THIS INSTAWARD</text>
+  <g font-family="Arial, sans-serif" font-size="15" font-weight="700" fill="#f8f2e8">
+    <rect x="105" y="585" width="240" height="70" rx="14" fill="#285b61"/><text x="225" y="613" text-anchor="middle">MSME</text><text x="225" y="637" text-anchor="middle" fill="#76d4bd">CredentialContract</text>
+    <rect x="375" y="585" width="240" height="70" rx="14" fill="#285b61"/><text x="495" y="613" text-anchor="middle">Creator</text><text x="495" y="637" text-anchor="middle" fill="#76d4bd">ContributionContract</text>
+    <rect x="645" y="585" width="240" height="70" rx="14" fill="#285b61"/><text x="765" y="613" text-anchor="middle">Demo + Wallets</text><text x="765" y="637" text-anchor="middle" fill="#76d4bd">StellarWalletsKit</text>
+    <rect x="915" y="585" width="240" height="70" rx="14" fill="#285b61"/><text x="1035" y="613" text-anchor="middle">Verifier</text><text x="1035" y="637" text-anchor="middle" fill="#76d4bd">Soroban RPC</text>
+  </g>
+  <path d="M345 620H375M615 620H645M885 620H915" stroke="#76d4bd" stroke-width="3" marker-end="url(#arrow)"/>
+  <text x="1220" y="613" font-family="Arial, sans-serif" font-size="14" font-weight="700" fill="#f4e7c7" text-anchor="middle">Stellar Expert</text>
+  <text x="1220" y="637" font-family="Arial, sans-serif" font-size="13" fill="#d7e5de" text-anchor="middle">public tx evidence</text>
+  <path d="M1155 620H1185" stroke="#76d4bd" stroke-width="3" marker-end="url(#arrow)"/>
+</svg>
