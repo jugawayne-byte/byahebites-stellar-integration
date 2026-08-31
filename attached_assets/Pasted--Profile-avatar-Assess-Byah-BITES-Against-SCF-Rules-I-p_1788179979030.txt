@@ -1,0 +1,265 @@
+
+
+Profile avatar
+
+Assess ByahéBITES Against SCF Rules
+
+I pulled the actual repository tree via GitHub's API and read every source and doc file directly (not just the README). Here's what's really in there, not just what's described.
+
+What actually exists
+text
+contracts/msme-credential/src/lib.rs        201 lines — real Rust, real tests
+contracts/creator-contribution/src/lib.rs   133 lines — real Rust, real tests
+demo/backend/routes/{credential,contribution}.rs   ~17 lines each — stub/pseudocode
+demo/frontend/                              README only, zero source files
+tests/                                       README only: "Placeholder for contract and demo test cases"
+scripts/                                     README only, zero scripts
+release/notes.md                             one line, no hashes
+docs/*.md                                    6 well-written planning/checklist docs
+The two Soroban contracts: genuinely solid
+Both msme-credential/src/lib.rs and creator-contribution/src/lib.rs are real, compilable-looking Soroban contracts, not placeholders:
+
+msme-credential: initialize() sets a single allowlisted issuer with require_auth(); issue() re-checks require_auth() + issuer allowlist, rejects empty PSGC/circuit fields and invalid status enums, and rejects re-issuing an existing subject ("credential already exists"); get() computes an Expired status live from expires_at at read time rather than trusting stored state.
+
+creator-contribution: record() requires the creator's own signature, rejects empty circuit IDs, and enforces write-once semantics via a (creator, content_hash) composite key ("duplicate contribution").
+
+Both use #![no_std], proper #[contracttype] storage structs, and separate persistent vs instance storage appropriately for credential/contribution records vs. the issuer config.
+
+Each file ships 3 embedded #[cfg(test)] unit tests covering the happy path, the duplicate/overwrite rejection, and (for msme-credential) the unauthorized-issuer rejection.
+
+Both pin soroban-sdk = "=25.0.0" and use env.register_contract(...) in tests — this call is deprecated in favor of env.register(...) in the current SDK, but deprecated (not removed) APIs still compile with a warning, so this is a code-quality nit, not a build blocker.
+
+This part of the repo backs up the README's core technical claims.
+
+Where the claims outrun the code
+Tests directory is empty. The README's reviewer checklist promises coverage for "unauthorized, malformed, invalid-enum, duplicate, overwrite, wrong-network, unavailable-state, and unknown-record" cases. Only 3 of those are actually implemented as tests (duplicate/overwrite, unauthorized issuer, malformed/empty field) — there's no test for the invalid-status-enum panic path, and the dedicated tests/ folder is a one-line placeholder, not a test suite.
+
+The demo backend doesn't work. demo/backend/routes/credential.rs and contribution.rs are 17-line stubs that call a nonexistent soroban_sdk::Client::new("https://...") API (soroban-sdk's Client type doesn't work this way — it wraps a contract address inside a test Env, not an RPC URL) and pass hardcoded literals like "creator123" and 1234_u32 instead of real request payloads. There's no Cargo.toml, main.rs, or crate manifest for this "backend" at all, so it isn't a buildable service — it reads as illustrative pseudocode, not the "XDR build/submit endpoints" the README describes.
+
+The demo frontend has no code. Just a 3-line README describing what it should do (wallet connect, issuance UI). No HTML/JS/TS files exist anywhere in the tree.
+
+scripts/ is empty despite the README repository map calling it "deployment and lifecycle scripts."
+
+The Quickstart instructions don't match the repo. README says to run pnpm install and pnpm --filter @workspace/byahebites-stellar-integration run dev, and the repo map lists a src/ folder as "Replit preview frontend shell" — but there's no package.json, no pnpm-workspace.yaml, and no root-level src/ anywhere in the actual tree. As committed, those setup commands would fail immediately.
+
+No CI. docs/toolchain.md claims "GitHub Actions for CI/CD," but there's no .github/workflows/ directory in the repo at all.
+
+Zero deployment evidence, consistent with what the README already disclosed: .env.example has MSME_CONTRACT_ID=SET_AFTER_TESTNET_DEPLOY placeholders, release/notes.md is a one-line stub, and docs/acceptance-manifest.md's own evaluation criteria ("contracts compile and deploy," "demo frontend connects wallets," "lookup endpoint returns verifiable testnet records") are all still unmet by the code present.
+
+What this means against the Instawards standard
+Splitting the repo into "planned" vs "built" sharpens the earlier assessment: the on-chain logic layer (the two Soroban contracts) is real, reasonably careful, and already unit-tested — that's legitimate execution evidence, not vaporware. But the "standalone demo" deliverable and the reviewer-evidence tooling (scripts, full test suite, CI) are still just scaffolding and documentation, not working artifacts. Since the Instawards rules evaluate a sprint against its agreed deliverables at the end of the 30 days, and the sprint's own SOW lists "Wallet onboarding flows," "Public demo showing issuance and lookup," and "Testnet verification via Stellar Expert" as deliverables, roughly half the promised sprint output (contracts) is done and half (demo, scripts, full test coverage, CI, and all deployment evidence) is not yet built. If a submission is due soon, the fastest path to closing the gap is: give the backend routes a real Cargo crate + real Soroban RPC calls (not the Client::new(url) stub), write at least a minimal frontend that can call those routes, deploy both contracts to testnet, and fill in the transaction-hash evidence the README already has placeholders for.
+
+give me the replit prompt or json file to build the minimal frontend and deployment evidence package and then add the missing invalid-status and unknown record contract tests
+
+I put together both formats, based on the exact gaps found in your repo tree.
+
+The prompt (copy-paste into Replit Agent) covers three tasks in order:
+
+Adds the exact Rust test code for the invalid-status-enum panic path and the unknown-record lookup (for both contracts), plus a small cleanup of the deprecated register_contract call.
+
+Rebuilds the demo as a real Node/TypeScript app (Express + @stellar/stellar-sdk backend, Vite + StellarWalletsKit frontend) — since the current demo/backend/routes/*.rs files don't compile (no Cargo.toml, and they call a soroban_sdk::Client::new(url) API that doesn't exist) and demo/frontend/ has no source at all. I standardized on JS/TS since that's what your own docs/toolchain.md and README already claim the stack is.
+
+Builds the deployment-evidence package per your existing docs/deployment-guide.md checklist — deploy both contracts, seed real sample records, produce the CSV/JSON transaction lists, fill the .env.example/README placeholders, and record the walkthrough.
+
+The JSON file is the same three tasks in a structured, automatable format if you want to feed it into a task tracker or a different agent.
+
+One flag worth noting: I told the agent to delete the two orphaned .rs route stubs rather than try to fix them in place, since they conflict with the JS stack your own docs describe — if you'd rather keep everything in Rust/axum instead, let me know and I'll redo Task 2 for that stack.
+
+
+Replit Agent Tasks (JSON)
+JSON
+
+Replit Agent Prompt — Close Evidence Gap
+Replit Agent Prompt — Close Evidence Gap
+Document
+
+Redo Task 2 using Rust and Axum instead
+
+Help me run the new tests in Replit
+
+Review the Replit Agent output after implementation
+
+
+Replit Agent Prompt — ByahéBITES Soroban Instaward: Close the Evidence Gap
+Paste everything below into the Replit Agent chat inside the byahebites-stellar-integration repl.
+
+Context (do not skip)
+This is the jugawayne-byte/byahebites-stellar-integration repo — a Stellar Community Fund Instaward sprint (testnet-only, 30-day scope). Two Soroban contracts already exist and are solid:
+
+contracts/msme-credential/src/lib.rs
+
+contracts/creator-contribution/src/lib.rs
+
+What's missing, confirmed by direct inspection of the repo tree:
+
+tests/ only contains a placeholder README — no dedicated test suite, and the embedded #[cfg(test)] modules in the two contracts are missing an invalid-status-enum test and an unknown-record test.
+
+demo/backend/routes/credential.rs and contribution.rs are 17-line stub files with no Cargo.toml, no main.rs — they don't compile as a crate and call a nonexistent soroban_sdk::Client::new(url) API. demo/frontend/ has zero source files, only a README.
+
+There is no deployment evidence anywhere: .env.example has SET_AFTER_TESTNET_DEPLOY placeholders, release/notes.md is one line, and no contract IDs, transaction hashes, or Stellar Expert links exist yet.
+
+docs/toolchain.md says the intended stack is Stellar SDK (JavaScript) + StellarWalletsKit, which conflicts with the abandoned Rust/axum stub routes. Standardize on the JavaScript/TypeScript stack described in the README and toolchain doc — delete the orphaned .rs stub routes.
+
+Do all three tasks below in one pass. Testnet only — never touch mainnet config, never fabricate contract IDs or transaction hashes; every ID/hash in the evidence package must come from an actual stellar contract deploy/invoke you run in this Repl.
+
+Task 1 — Add the two missing contract tests
+1a. contracts/msme-credential/src/lib.rs
+Add these two tests inside the existing #[cfg(test)] mod test { ... } block, alongside issues_and_reads_credential, rejects_overwrite, and rejects_non_allowlisted_issuer:
+
+rust
+#[test]
+#[should_panic(expected = "invalid status")]
+fn rejects_invalid_status_value() {
+    let env = Env::default();
+    let contract_id = env.register(MsmeCredentialContract, ());
+    let client = MsmeCredentialContractClient::new(&env, &contract_id);
+    let issuer = Address::generate(&env);
+    let subject = Address::generate(&env);
+
+    env.mock_all_auths();
+    client.initialize(&issuer);
+    client.issue(
+        &issuer,
+        &subject,
+        &1,
+        &Bytes::from_slice(&env, b"PH-045"),
+        &99u32, // not STATUS_ISSUED (1) or STATUS_ACTIVE (2)
+        &Bytes::from_slice(&env, b"circuit-1"),
+        &BytesN::from_array(&env, &[1; 32]),
+        &0,
+        &1,
+    );
+}
+
+#[test]
+fn returns_none_for_unknown_subject() {
+    let env = Env::default();
+    let contract_id = env.register(MsmeCredentialContract, ());
+    let client = MsmeCredentialContractClient::new(&env, &contract_id);
+    let issuer = Address::generate(&env);
+    let unknown_subject = Address::generate(&env);
+
+    env.mock_all_auths();
+    client.initialize(&issuer);
+    // No credential was ever issued to unknown_subject.
+    assert!(client.get(&unknown_subject).is_none());
+    assert!(!client.has(&unknown_subject));
+}
+1b. contracts/creator-contribution/src/lib.rs
+Add this test inside its existing #[cfg(test)] mod test { ... } block:
+
+rust
+#[test]
+fn returns_none_for_unknown_contribution() {
+    let env = Env::default();
+    let contract_id = env.register(CreatorContributionContract, ());
+    let client = CreatorContributionContractClient::new(&env, &contract_id);
+    let creator = Address::generate(&env);
+    let hash = BytesN::from_array(&env, &[42; 32]);
+
+    // No contribution was ever recorded for this (creator, hash) pair.
+    assert!(client.get(&creator, &hash).is_none());
+    assert!(!client.has(&creator, &hash));
+}
+1c. Modernize the registration call (small cleanup while you're in there)
+All existing tests use env.register_contract(None, ContractName), which is deprecated in current soroban-sdk releases in favor of env.register(ContractName, ()). Since the pinned version is soroban-sdk = "=25.0.0", both work, but replace every env.register_contract(None, X) with env.register(X, ()) in both files for consistency and to drop the deprecation warning. Update the new tests above to match whichever form you standardize on across the file.
+
+1d. Verify
+Run:
+
+bash
+stellar contract build
+stellar contract test
+Confirm all tests pass (5 tests in msme-credential, 4 in creator-contribution). Paste the full test output into release/notes.md under a new "Test Report" heading, and also update tests/README.md to say what negative-path cases are covered and point to the two contract crates (since there is no separate tests/ crate — be honest that this is where the tests live).
+
+Task 2 — Build the minimal standalone demo (frontend + backend)
+Delete demo/backend/routes/credential.rs and demo/backend/routes/contribution.rs — they don't compile and use a nonexistent API. Rebuild the demo as a small Node/TypeScript app matching docs/toolchain.md and the README's "StellarWalletsKit wallet connection, XDR build/submit endpoints, credential/contribution flows, and Soroban RPC lookup" description.
+
+2a. demo/backend/ (Node + Express + @stellar/stellar-sdk)
+Create:
+
+demo/backend/package.json — Express, @stellar/stellar-sdk, cors, dotenv
+
+demo/backend/src/server.ts — Express app reading SOROBAN_RPC_URL, MSME_CONTRACT_ID, CONTRIBUTION_CONTRACT_ID, STELLAR_NETWORK from env (match .env.example keys exactly)
+
+demo/backend/src/routes/credential.ts:
+
+POST /issue — accepts { issuerPublicKey, subjectPublicKey, msmeId, psgcCode, status, circuitId, contentHash, expiresAt, version }, builds an unsigned XDR transaction invoking issue on the MSME contract via @stellar/stellar-sdk's Contract/TransactionBuilder, returns the XDR for the frontend to sign with the wallet — do NOT hold or use any secret key server-side.
+
+POST /submit — accepts a signed XDR envelope, submits it to Soroban RPC, returns the transaction hash.
+
+GET /credential/:subjectPublicKey — reads contract state via Soroban RPC simulateTransaction/getContractData, returns the parsed record or a clear "not found" response (never a false "verified").
+
+demo/backend/src/routes/contribution.ts — same pattern for record, submit, and GET /contribution/:creatorPublicKey/:contentHash.
+
+Explicit error handling for: malformed input, wrong network, RPC unavailable, and unknown record — each must return a distinct, clearly labeled response per docs/verification-guide.md section 5 (fail-closed behavior). Never render an unavailable/uncertain state as "verified."
+
+2b. demo/frontend/ (Vite + TypeScript, no framework needed)
+Create:
+
+demo/frontend/package.json, demo/frontend/vite.config.ts, demo/frontend/index.html
+
+demo/frontend/src/main.ts:
+
+Wallet connect using @creit.tech/stellar-wallets-kit (StellarWalletsKit), supporting Freighter plus one other wallet, per the README's reviewer checklist ("Freighter plus one additional Stellar wallet tested")
+
+A simple form to issue an MSME credential (calls backend /issue, signs XDR with the connected wallet via StellarWalletsKit, calls backend /submit, displays the resulting transaction hash with a direct Stellar Expert Testnet link)
+
+A simple form to record a creator contribution (same XDR build/sign/submit flow)
+
+A lookup panel that reads back a credential or contribution by wallet/hash and displays the same fail-closed states as the backend (not found / wrong network / RPC unavailable)
+
+Clearly display "Stellar Testnet" in the UI header at all times, per docs/verification-guide.md step 1
+
+2c. Root wiring
+Add a root package.json with a pnpm-workspace.yaml covering demo/backend and demo/frontend so the README's existing Quickstart commands (pnpm install, pnpm --filter ... run dev) actually work — or, if simpler, rewrite the Quickstart section in README.md to reflect the real run commands (e.g., cd demo/backend && pnpm install && pnpm dev / cd demo/frontend && pnpm install && pnpm dev). Pick whichever you implement and make the README match exactly — do not leave stale instructions.
+
+2d. Update demo/backend/README.md and demo/frontend/README.md
+Replace the current one-line descriptions with real run instructions, required env vars, and a summary of endpoints/pages.
+
+Task 3 — Build the deployment evidence package
+Follow docs/deployment-guide.md exactly; this is the checklist the SCF reviewer will use.
+
+3a. Deploy to testnet
+bash
+stellar contract build
+stellar contract deploy --network testnet --source <FUNDED_TESTNET_DEPLOYER> --wasm target/wasm32-unknown-unknown/release/msme_credential.wasm
+stellar contract deploy --network testnet --source <FUNDED_TESTNET_DEPLOYER> --wasm target/wasm32-unknown-unknown/release/creator_contribution.wasm
+Capture for each: contract name, contract ID, deployment transaction hash, WASM SHA-256, deployer public address, issuer public address. Never commit any secret key.
+
+3b. Generate real sample records
+Write scripts/seed-testnet.ts (Node script using @stellar/stellar-sdk) that, using a disclosed demo issuer keypair (testnet only), issues a handful of sample MSME credentials and creator contributions against the deployed contracts, and:
+
+Also submits one deliberately duplicate/overwrite call and records the rejection (for the evidence package's negative-path proof)
+
+Prints every transaction hash it produces
+
+3c. Evidence files
+Create:
+
+docs/evidence/transactions.csv and docs/evidence/transactions.json — same data in both formats, columns: type (deploy/issue/record/rejected), contract, tx_hash, ledger_sequence, stellar_expert_link, timestamp
+
+docs/evidence/screenshots/ — add the walkthrough screenshots once the demo is live
+
+Update release/notes.md with: pinned toolchain versions (Rust, Soroban CLI, soroban-sdk, Node), the full stellar contract test output from Task 1d, both contract IDs, both deployment tx hashes, and WASM checksums
+
+3d. Update README.md and .env.example
+Replace SET_AFTER_TESTNET_DEPLOY placeholders in .env.example and in the README's "Live demo" section with the real contract IDs and issuer public address
+
+Add the live demo URL once demo/frontend is deployed (e.g., via Replit's own hosting or Vercel)
+
+Link to docs/evidence/transactions.csv/.json from the README's "Sprint deliverables" section
+
+Walk through docs/deployment-guide.md's "Final release check" list item by item and confirm each box before you consider this done — especially "no secrets appear in Git history" and "a reviewer can reproduce a read without a wallet"
+
+3e. Record the walkthrough
+Once frontend + backend + deployed contracts are wired together, record a 3–5 minute screen capture showing: wallet connect → issue credential → read it back → attempt a duplicate → contribution flow → Stellar Expert Testnet lookup, matching docs/verification-guide.md sections 2–4. Save the link in the README.
+
+Constraints (apply to all three tasks)
+Testnet only. No mainnet URLs, networks, or commands anywhere.
+
+No secret keys, .env files, or signed XDR ever committed to Git.
+
+Every contract ID / transaction hash in the evidence package must come from a real command you ran in this Repl — never invent placeholder-looking values that read as real.
+
+If any step fails (e.g., no funded testnet account available), stop and report the blocker instead of faking output.
