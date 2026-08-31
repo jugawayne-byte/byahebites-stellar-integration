@@ -8,12 +8,14 @@
 
 ## Live demo
 
-**Published demo:** [github-import-jugaway.replit.app](https://github-import-jugaway.replit.app/)
+**Published demo:** [github-import-jugawayne.replit.app](https://github-import-jugawayne.replit.app/)
 
 The published demo uses Stellar Wallets Kit and direct Soroban RPC/transaction
 flows on Testnet. It is still a prototype: do not represent synthetic QA data
 as participant adoption, and do not claim an on-chain result until the wallet
 transaction or RPC read has completed successfully.
+
+**Product site:** [byahebites.app](https://byahebites.app/)
 
 ## Testnet deployment evidence
 
@@ -44,6 +46,13 @@ The two resulting SHA-256 values must match the checksums in the table and in
 [`deployments/testnet.json`](../../deployments/testnet.json). To independently
 check any listed deployment or initialization hash without a wallet, use the
 Soroban RPC command in the [verification guide](docs/verification-guide.md).
+
+### Deployed Testnet contracts
+
+- **MSME Credential:** [`CBFGWVFTPC5L3NEEZ3XMO6W3MR3X5OKVSYZ5QVL7D5VT4EYZKHBBNSQ3`](https://stellar.expert/explorer/testnet/contract/CBFGWVFTPC5L3NEEZ3XMO6W3MR3X5OKVSYZ5QVL7D5VT4EYZKHBBNSQ3)
+  — deployment [`21382e968dfee7a1c1bc0ad5d427e9ecc7ab52f44e6a199b44e7de4aaf379919`](https://stellar.expert/explorer/testnet/tx/21382e968dfee7a1c1bc0ad5d427e9ecc7ab52f44e6a199b44e7de4aaf379919)
+- **Creator Contribution:** [`CDP3RVMNYOQV4II3SGRCZHSO7DSH57QIDDR3BSYOJ5VMVXOJBR5PV2KP`](https://stellar.expert/explorer/testnet/contract/CDP3RVMNYOQV4II3SGRCZHSO7DSH57QIDDR3BSYOJ5VMVXOJBR5PV2KP)
+  — deployment [`da42bf2c1f0f832fd83f98c96d1dff753e4a822ec74e3a0ebca6a6aecf9c855e`](https://stellar.expert/explorer/testnet/tx/da42bf2c1f0f832fd83f98c96d1dff753e4a822ec74e3a0ebca6a6aecf9c855e)
 
 ![ByahéBITES live demo preview](docs/images/demo.jpg)
 
