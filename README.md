@@ -14,6 +14,8 @@ The demo is intentionally labeled as a demonstration until real contract IDs and
 
 ![ByahéBITES live demo preview](docs/images/demo.jpg)
 
+**Product site:** [byahebites.app](https://byahebites.app/)
+
 ## Why this matters
 
 ByahéBITES Nearby — “Hanapin ang kainan sa budget mo” — helps pilot LGUs, creators, and tourism stakeholders discover and promote local MSMEs. This sprint adds a public proof layer for the trust signals that currently live in private systems:
