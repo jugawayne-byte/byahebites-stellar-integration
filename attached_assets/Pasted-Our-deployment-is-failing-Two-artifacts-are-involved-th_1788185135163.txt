@@ -1,0 +1,56 @@
+Our deployment is failing. Two artifacts are involved: the static frontend
+at artifacts/byahebites-stellar-integration (built to dist/public) and a
+Node service at artifacts/api-server (built to dist/index.mjs, run as
+`node --enable-source-maps artifacts/api-server/dist/index.mjs` on port 8080).
+
+1. Run the production build exactly as the deploy pipeline does (both
+   `pnpm --filter byahebites-stellar-integration run build` and
+   `pnpm --filter api-server run build`) and confirm dist/public and
+   dist/index.mjs are both produced without errors. If the frontend build
+   fails or is skipped, tell me why and fix the build command/config.
+
+2. Run `node --enable-source-maps artifacts/api-server/dist/index.mjs`
+   locally with the same environment variables as production and capture
+   the full crash trace. Identify the exact missing module in the
+   "Cannot find module" error.
+
+3. Check artifacts/api-server/package.json: is the missing module listed
+   under `dependencies` (not `devDependencies`)? Does anything in
+   artifacts/api-server/src import a file from outside its own package
+   (e.g. from scripts/ or the repo root) that won't be bundled into dist/?
+   Fix the dependency placement or bundling so `pnpm install --prod` inside
+   artifacts/api-server alone is enough to run it.
+
+4. Once it boots, hit GET /api locally and see why it currently returns
+   500 instead of 200 — check whether that route does real work (RPC calls,
+   reading contract IDs) that depends on environment variables/secrets that
+   exist in the dev workspace's .env but are NOT set in the Deployment's
+   Secrets panel. Either set those secrets in the deployment environment,
+   or make /api a lightweight liveness check that doesn't depend on
+   external calls, with a separate /api/status route for the real checks.
+
+Report back what the missing module was and what you changed.
+
+
+Inspect the full missing-module stack trace
+
+Create a Replit Agent prompt to fix the deployment
+
+Check the api-server package dependencies and build commands
+
+Artifacts
+
+2
+
+
+Sources
+
+
+180
+
+
+
+Usage
+15m 14s
+
+
