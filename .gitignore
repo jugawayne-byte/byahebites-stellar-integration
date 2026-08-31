@@ -48,6 +48,9 @@ Thumbs.db
 .cache/
 .local/
 
+# Generated mockup entry page (created by package lifecycle scripts)
+/artifacts/mockup-sandbox/index.html
+
 # Rust build output and generated Soroban test snapshots
 **/target/
 **/test_snapshots/

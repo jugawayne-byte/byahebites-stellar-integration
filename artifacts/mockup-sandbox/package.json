@@ -4,8 +4,12 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "prepare:index": "node ./prepare-index.mjs",
+    "predev": "pnpm run prepare:index",
     "dev": "vite dev",
+    "prebuild": "pnpm run prepare:index",
     "build": "vite build",
+    "prepreview": "pnpm run prepare:index",
     "preview": "vite preview",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
